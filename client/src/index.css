@@ -1,0 +1,62 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.one-line-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.two-line-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.five-line-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 5; /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.required-input::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
+  color: red;
+  opacity: 0.4;
+}
+.required-input::-moz-placeholder {
+  /* Firefox 19+ */
+  color: red;
+  opacity: 0.4;
+}
+.required-input:-ms-input-placeholder {
+  /* IE 10+ */
+  color: red;
+  opacity: 0.4;
+}
+.required-input:-moz-placeholder {
+  /* Firefox 18- */
+  color: red;
+  opacity: 0.4;
+}
+
+.required-field {
+  color: red;
+}

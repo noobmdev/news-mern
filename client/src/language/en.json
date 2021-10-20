@@ -1,0 +1,23 @@
+{
+  "login": "Login",
+  "register": "Register",
+  "username": "Username",
+  "email": "Email",
+  "password": "Password",
+  "password_confirm": "Password Confirm",
+  "firstname": "First Name",
+  "lastname": "Last Name",
+  "phone": "Phone",
+  "postcode": "Postcode",
+  "country": "Country",
+  "city_provine": "City/Provine",
+  "address": "Address",
+  "university": "University",
+  "major": "Major",
+  "research": "Research",
+  "role": "Role",
+  "forgot_pwd": "Forgot passowrd?",
+  "create_new_account": "Create a new account?",
+  "choose_major": "Choose major",
+  "choose_research": "Choose research"
+}

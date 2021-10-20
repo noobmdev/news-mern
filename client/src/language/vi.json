@@ -1,0 +1,23 @@
+{
+  "login": "Đăng nhập",
+  "register": "Đăng ký",
+  "username": "Tên đằng nhập",
+  "email": "Email",
+  "password": "Mật khẩu",
+  "password_confirm": "Xác nhận mật khẩu",
+  "firstname": "Tên",
+  "lastname": "Họ",
+  "phone": "Điện thoại",
+  "postcode": "Mã bưu điện",
+  "country": "Quốc gia",
+  "city_provine": "Thành phố/Tỉnh",
+  "address": "Địa chỉ",
+  "university": "Đại học",
+  "major": "Chuyên ngành",
+  "research": "Hướng nghiên cứu",
+  "role": "Vai trò",
+  "forgot_pwd": "Quên mật khẩu?",
+  "create_new_account": "Tạo tài khoản mới?",
+  "choose_major": "Chọn chuyên ngành",
+  "choose_research": "Chọn hướng nghiên cứu"
+}

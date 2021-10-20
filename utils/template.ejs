@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      table {
+        border-collapse: collapse;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+      td {
+        padding: 8px;
+      }
+      .col-1 {
+        width: 30%;
+        font-weight: 600;
+      }
+      .col-2 {
+        width: 70%;
+      }
+    </style>
+  </head>
+  <body style="color: #343766">
+    <div style="width: 85%; margin: 0 7.5%">
+      <div style="text-align: center">
+        <h1 style="text-transform: uppercase">TẠP CHÍ JTST</h1>
+        <h6 style="text-transform: uppercase">
+          Manuscript ID: <%= article.manuscriptId %>
+        </h6>
+        <h2 style="text-transform: uppercase"><%= article.title %></h2>
+      </div>
+      <table style="width: 100%">
+        <tr>
+          <td class="col-1">Manuscript ID</td>
+          <td class="col-2" style="text-transform: capitalize">
+            <%= article.manuscriptId %>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-1">Full title</td>
+          <td class="col-2" style="text-transform: capitalize">
+            <%= article.title %>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-1">Summary</td>
+          <td class="col-2"><%= article.summary %></td>
+        </tr>
+        <tr>
+          <td class="col-1">Keywords</td>
+          <td class="col-2"><%= article.keywords %></td>
+        </tr>
+        <tr>
+          <td class="col-1">Authors</td>
+          <td class="col-2">
+            <% article.authors.forEach(function(author) { %>
+            <div>
+              Name: <%= author.firstname %> <%= author.lastname %>. Work Unit:
+              <%= author.workUnit %>. Email: <%= author.email %>.
+            </div>
+            <% }); %>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-1">Funding</td>
+          <td class="col-2"><%= article.prizeDetail %></td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
