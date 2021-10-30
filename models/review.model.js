@@ -66,4 +66,6 @@ const reviewSchema = mongoose.Schema({
   },
 });
 
+reviewSchema.index({ reviewer: true, article: true }, { unique: true });
+
 exports.Review = mongoose.model("reviews", reviewSchema);

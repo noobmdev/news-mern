@@ -14,6 +14,8 @@ const {
   updateReview,
   inviteReview,
   editorAccept,
+  publisherAccept,
+  publishArticle,
 } = require("../controllers/article.controller");
 const { uploadFile } = require("../services/uploadFile");
 
@@ -77,12 +79,8 @@ articleRoute
 
 articleRoute
   .route("/:id/reviews")
-  .get(
-    isAuth,
-    hasRole([ROLES.EDITOR]),
-    getReviews
-  )
-  .post(isAuth, hasRole([ROLES.EDITOR]), createReviews); 
+  .get(isAuth, hasRole([ROLES.EDITOR]), getReviews)
+  .post(isAuth, hasRole([ROLES.EDITOR]), createReviews);
 
 articleRoute
   .route("/:id/invite")
@@ -91,6 +89,14 @@ articleRoute
 articleRoute
   .route("/:id/invite/editor")
   .get(isAuth, hasRole([ROLES.EDITOR]), editorAccept);
+
+articleRoute
+  .route("/:id/invite/publisher")
+  .get(isAuth, hasRole([ROLES.PUBLISHER]), publisherAccept);
+
+articleRoute
+  .route("/:id/publish")
+  .post(isAuth, hasRole([ROLES.PUBLISHER]), publishArticle);
 
 articleRoute
   .route("/:id/reviews/:reviewId")

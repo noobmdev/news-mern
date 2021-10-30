@@ -36,7 +36,7 @@ import {
   MODAL_TITLES,
   REVIEW_STATUSES,
   ROLES,
-  PUBLISHER_STATUSES
+  PUBLISHER_STATUSES,
 } from "keys";
 import React, { useContext, useState } from "react";
 import { useEffect } from "react";
@@ -60,8 +60,8 @@ const Reviews = () => {
   const [reviewSelected, setReviewSelected] = useState();
   const [viewReviewSelected, setViewReviewSelected] = useState(false);
 
-  // flag refresh 
-  const [refresh, setRefresh] = useState(true)
+  // flag refresh
+  const [refresh, setRefresh] = useState(true);
 
   useEffect(() => {
     setLoading(true);
@@ -197,7 +197,6 @@ const Reviews = () => {
   }, [reviewSelected]);
 
   const hanldeReviewArticle = (review, isApprove = false) => {
-   
     axiosInstance
       .put(`/articles/${review.article._id}/reviews/${review._id}`, {
         data: {
@@ -227,46 +226,51 @@ const Reviews = () => {
     ApproveReview: "approve_review",
   };
 
-  const handleUpdateReview = (review, type) => {
-    if(!strongAspects?.trim() || !weakAspects?.trim() || !recommendedChanges?.trim()) {
-      return alert("Please fill all required fields")
+  const handleUpdateReview = (review, type, check = false) => {
+    if (
+      !check &&
+      (!strongAspects?.trim() ||
+        !weakAspects?.trim() ||
+        !recommendedChanges?.trim())
+    ) {
+      return alert("Please fill all required fields");
     }
 
-    if(window.confirm("Are you OK review")) {
+    if (window.confirm("Are you OK?")) {
       axiosInstance
-      .put(`/articles/${review.article._id}/reviews/${review._id}`, {
-        type,
-        data: {
-          scores: reviewScores,
-          strongAspects,
-          weakAspects,
-          recommendedChanges,
-        },
-      })
-      .then((res) => {
-        const idx = articles.findIndex((a) => a._id === review._id);
-        if (idx !== -1) {
-          setArticles((pre) => [
-            ...pre.slice(0, idx),
-            res.data,
-            ...pre.slice(idx + 1, pre.length),
-          ]);
-        }
-        alert("Review success");
-      })
-      .catch((err) => console.log(err));
+        .put(`/articles/${review.article._id}/reviews/${review._id}`, {
+          type,
+          data: {
+            scores: reviewScores,
+            strongAspects,
+            weakAspects,
+            recommendedChanges,
+          },
+        })
+        .then((res) => {
+          const idx = articles.findIndex((a) => a._id === review._id);
+          if (idx !== -1) {
+            setArticles((pre) => [
+              ...pre.slice(0, idx),
+              res.data,
+              ...pre.slice(idx + 1, pre.length),
+            ]);
+          }
+          alert(check ? "Accept review success" : "Review success");
+        })
+        .catch((err) => console.log(err));
     }
   };
 
-
-  const [reviewResults, setReviewResults] = useState([])
+  const [reviewResults, setReviewResults] = useState([]);
 
   const viewResultReview = (articleId) => {
-    setOpenReviewResultModal(true)
+    setOpenReviewResultModal(true);
 
-    axiosInstance.get(`/articles/${articleId}/reviews`)
-      .then(res => setReviewResults(res.data))
-  }
+    axiosInstance
+      .get(`/articles/${articleId}/reviews`)
+      .then((res) => setReviewResults(res.data));
+  };
 
   const renderActionLinksByRole = (item) => {
     const { status } = item;
@@ -455,7 +459,12 @@ const Reviews = () => {
                 <Button size="xs" mt="1" colorScheme="green">
                   View pdf
                 </Button>
-                <Button size="xs" mt="1" colorScheme="blue" onClick={() => handleOpenModalSendToPublisher(item._id)}>
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="blue"
+                  onClick={() => handleOpenModalSendToPublisher(item._id)}
+                >
                   Accept
                 </Button>
                 <Button size="xs" mt="1" colorScheme="red">
@@ -520,7 +529,12 @@ const Reviews = () => {
           case EDITOR_STATUSES.INCOMPLETE_ASSIGNMENT:
             return (
               <>
-                <Button size="xs" mt="1" colorScheme="blue" onClick={() => handleOpenModalSendResultChief(item._id)}>
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="blue"
+                  onClick={() => handleOpenModalSendResultChief(item._id)}
+                >
                   Send result to TBT
                 </Button>
                 <Button
@@ -531,7 +545,12 @@ const Reviews = () => {
                 >
                   Invite Reviewer
                 </Button>
-                <Button size="xs" mt="1" colorScheme="red" onClick={() => viewResultReview(item._id)}>
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="red"
+                  onClick={() => viewResultReview(item._id)}
+                >
                   View result of reviewer
                 </Button>
               </>
@@ -560,12 +579,9 @@ const Reviews = () => {
                   size="xs"
                   mt="1"
                   colorScheme="green"
-                  onClick={() => handleEditorAccept(item._id)}
+                  onClick={() => handlePublisherAccept(item._id)}
                 >
-                  Accept invitation
-                </Button>
-                <Button size="xs" mt="1" colorScheme="red">
-                  Decline invitation
+                  Publish
                 </Button>
               </>
             );
@@ -573,7 +589,12 @@ const Reviews = () => {
           case PUBLISHER_STATUSES.PUBLISHED:
             return (
               <>
-                <Button size="xs" mt="1" colorScheme="blue" onClick={() => handleOpenModalSendResultChief(item._id)}>
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="blue"
+                  onClick={() => handleOpenModalSendResultChief(item._id)}
+                >
                   Send result to TBT
                 </Button>
                 <Button
@@ -584,7 +605,12 @@ const Reviews = () => {
                 >
                   Invite Reviewer
                 </Button>
-                <Button size="xs" mt="1" colorScheme="red" onClick={() => viewResultReview(item._id)}>
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="red"
+                  onClick={() => viewResultReview(item._id)}
+                >
                   View result of reviewer
                 </Button>
               </>
@@ -691,23 +717,23 @@ const Reviews = () => {
           </Tr>
         ));
 
-    case ROLES.PUBLISHER:
-      return articles.map((item, idx) => (
-        <Tr key={item._id}>
-          <Td>{idx + 1}</Td>
-          <Td>{item.manuscriptId}</Td>
-          <Td>
-            <Box className="two-line-text">{item.info?.title}</Box>
-          </Td>
-          <Td>{timestampToDate(item.submissionDate)}</Td>
-          <Td textAlign="center">{checkStatus(item.publisherStatus)}</Td>
-          <Td isNumeric>
-            <VStack textAlign="center">
-              {renderActionLinksByRole(item)}
-            </VStack>
-          </Td>
-        </Tr>
-      ));
+      case ROLES.PUBLISHER:
+        return articles.map((item, idx) => (
+          <Tr key={item._id}>
+            <Td>{idx + 1}</Td>
+            <Td>{item.manuscriptId}</Td>
+            <Td>
+              <Box className="two-line-text">{item.info?.title}</Box>
+            </Td>
+            <Td>{timestampToDate(item.submissionDate)}</Td>
+            <Td textAlign="center">{checkStatus(item.publisherStatus)}</Td>
+            <Td isNumeric>
+              <VStack textAlign="center">
+                {renderActionLinksByRole(item)}
+              </VStack>
+            </Td>
+          </Tr>
+        ));
 
       default:
         return;
@@ -773,13 +799,7 @@ const Reviews = () => {
   };
 
   const handleApproveReview = (review) => {
-    const data = {
-      scores: reviewScores,
-      strongAspects,
-      weakAspects,
-      recommendedChanges,
-    };
-    handleUpdateReview(review, UpdateReviewActions.ApproveReview);
+    handleUpdateReview(review, UpdateReviewActions.ApproveReview, true);
   };
 
   // EDITOR_IN_CHIEF
@@ -821,7 +841,7 @@ const Reviews = () => {
     return axiosInstance
       .get(`/articles/${articleId}/invite/editor`)
       .then((_) => {
-        setRefresh(pre => !pre)
+        setRefresh((pre) => !pre);
       })
       .catch(console.log);
   };
@@ -832,9 +852,23 @@ const Reviews = () => {
     onOpenSendMailModal();
   };
 
+  //PUBLISHER
+  const handlePublisherAccept = (articleId) => {
+    setCurrentModalTitle(MODAL_TITLES.PUBLISH_ARTICLE);
+    setCurrentModalArticle(articleId);
+    onOpenSendMailModal();
+
+    // return axiosInstance
+    //   .get(`/articles/${articleId}/invite/publisher`)
+    //   .then((_) => {
+    //     setRefresh((pre) => !pre);
+    //   })
+    //   .catch(console.log);
+  };
+
   return !loading ? (
     <Box>
-       <Modal
+      <Modal
         size="2xl"
         isOpen={openReviewResultModal}
         onClose={() => {
@@ -845,11 +879,33 @@ const Reviews = () => {
         <ModalContent>
           <ModalHeader>Review results</ModalHeader>
           <ModalCloseButton />
-            <ModalBody>
-              {reviewResults?.length ? reviewResults.map(e => <Box>
-                  {JSON.stringify(e)}
-              </Box>) : <Box>Loading...</Box>}
-            </ModalBody>
+          <ModalBody>
+            <VStack align="stretch" spacing="4">
+              {reviewResults?.length ? (
+                reviewResults.map((review, idx) => (
+                  <Box>
+                    <Box fontSize="xl">Reviewer {idx + 1}</Box>
+                    <Grid templateColumns="2em 1fr">
+                      <Box>{review.scores?.reievance}</Box>
+                      <Box>Reievance and timeliness</Box>
+                      <Box>{review.scores?.technicalContent}</Box>
+                      <Box>Technical content and scienific rigour</Box>
+                      <Box>{review.scores?.novelty}</Box>
+                      <Box>Novelty and originality</Box>
+                      <Box>{review.scores?.quality}</Box>
+                      <Box>Quality of presentation</Box>
+                    </Grid>
+                    <Box>Strong aspects: {review.strongAspects}</Box>
+                    <Box>Weak aspects: {review.weakAspects}</Box>
+                    <Box>Recommended changes: {review.recommendedChanges}</Box>
+                    <hr />
+                  </Box>
+                ))
+              ) : (
+                <Box>Loading...</Box>
+              )}
+            </VStack>
+          </ModalBody>
         </ModalContent>
       </Modal>
 
@@ -870,7 +926,9 @@ const Reviews = () => {
             <ModalBody>
               <VStack align="stretch" spacing="6">
                 <Grid templateColumns="repeat(4, 1fr)" gap="2">
-                  <GridItem textAlign="right" fontWeight="semibold">Article's name: </GridItem>
+                  <GridItem textAlign="right" fontWeight="semibold">
+                    Article's name:{" "}
+                  </GridItem>
                   <GridItem colSpan="3">
                     {reviewSelected.article?.info.title}
                   </GridItem>
@@ -878,7 +936,9 @@ const Reviews = () => {
                 <GridItem colSpan="3">
                   {reviewSelected.article?.researches.toString()}
                 </GridItem> */}
-                  <GridItem textAlign="right" fontWeight="semibold">File content: </GridItem>
+                  <GridItem textAlign="right" fontWeight="semibold">
+                    File content:{" "}
+                  </GridItem>
                   <GridItem
                     colSpan="3"
                     textDecor="underline"
@@ -890,29 +950,29 @@ const Reviews = () => {
                   </GridItem>
                 </Grid>
 
-                  <HStack>
-                    <Box w="20">
-                      <Select
-                        value={reviewScores.reievance}
-                        onChange={(e) =>
-                          setReviewScores((pre) => ({
-                            ...pre,
-                            reievance: e.target.value,
-                          }))
-                        }
-                        isDisabled={viewReviewSelected}
-                      >
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                      </Select>
-                    </Box>
-                    <Box textAlign="center">Reievance and timeliness</Box>
-                  </HStack>
-                  <HStack>
-                    <Box w="20">
+                <HStack>
+                  <Box w="20">
+                    <Select
+                      value={reviewScores.reievance}
+                      onChange={(e) =>
+                        setReviewScores((pre) => ({
+                          ...pre,
+                          reievance: e.target.value,
+                        }))
+                      }
+                      isDisabled={viewReviewSelected}
+                    >
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </Select>
+                  </Box>
+                  <Box textAlign="center">Reievance and timeliness</Box>
+                </HStack>
+                <HStack>
+                  <Box w="20">
                     <Select
                       value={reviewScores.technicalContent}
                       onChange={(e) =>
@@ -929,57 +989,58 @@ const Reviews = () => {
                       <option value="4">4</option>
                       <option value="5">5</option>
                     </Select>
-                    </Box>
-                    <Box textAlign="center">
-                      Technical content and scienific rigour
-                    </Box>
-                  </HStack>
-                  <HStack>
-                    <Box w="20">
-                      <Select
-                        value={reviewScores.novelty}
-                        onChange={(e) =>
-                          setReviewScores((pre) => ({
-                            ...pre,
-                            novelty: e.target.value,
-                          }))
-                        }
-                        isDisabled={viewReviewSelected}
-                      >
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                      </Select>
-                    </Box>
-                    <Box textAlign="center">Novelty and originality</Box>
-                  </HStack>
-                  <HStack>
-                    <Box w="20">
-                      <Select
-                        value={reviewScores.quality}
-                        onChange={(e) =>
-                          setReviewScores((pre) => ({
-                            ...pre,
-                            quality: e.target.value,
-                          }))
-                        }
-                        isDisabled={viewReviewSelected}
-                      >
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                      </Select>
-                    </Box>
-                    <Box textAlign="center">Quality of presentation</Box>
-                  </HStack>
-               
+                  </Box>
+                  <Box textAlign="center">
+                    Technical content and scienific rigour
+                  </Box>
+                </HStack>
+                <HStack>
+                  <Box w="20">
+                    <Select
+                      value={reviewScores.novelty}
+                      onChange={(e) =>
+                        setReviewScores((pre) => ({
+                          ...pre,
+                          novelty: e.target.value,
+                        }))
+                      }
+                      isDisabled={viewReviewSelected}
+                    >
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </Select>
+                  </Box>
+                  <Box textAlign="center">Novelty and originality</Box>
+                </HStack>
+                <HStack>
+                  <Box w="20">
+                    <Select
+                      value={reviewScores.quality}
+                      onChange={(e) =>
+                        setReviewScores((pre) => ({
+                          ...pre,
+                          quality: e.target.value,
+                        }))
+                      }
+                      isDisabled={viewReviewSelected}
+                    >
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </Select>
+                  </Box>
+                  <Box textAlign="center">Quality of presentation</Box>
+                </HStack>
 
                 <Box>
-                  <Box>Strong aspects <span  className="required-field">*</span></Box>
+                  <Box>
+                    Strong aspects <span className="required-field">*</span>
+                  </Box>
                   <Textarea
                     value={strongAspects}
                     onChange={(e) => setStrongAspects(e.target.value)}
@@ -990,7 +1051,9 @@ const Reviews = () => {
                 </Box>
 
                 <Box>
-                  <Box>Weak aspects  <span  className="required-field">*</span></Box>
+                  <Box>
+                    Weak aspects <span className="required-field">*</span>
+                  </Box>
                   <Textarea
                     value={weakAspects}
                     onChange={(e) => setWeakAspects(e.target.value)}
@@ -1001,7 +1064,10 @@ const Reviews = () => {
                 </Box>
 
                 <Box>
-                  <Box>Recommnended changes  <span className="required-field">*</span></Box>
+                  <Box>
+                    Recommnended changes{" "}
+                    <span className="required-field">*</span>
+                  </Box>
                   <Textarea
                     value={recommendedChanges}
                     onChange={(e) => setRecommendedChanges(e.target.value)}
@@ -1104,4 +1170,5 @@ export default withRole(Reviews, [
   ROLES.EDITOR,
   ROLES.REVIEWER,
   ROLES.PUBLISHER,
+  ROLES.EDITOR_IN_CHIEF,
 ]);

@@ -67,5 +67,6 @@ export const MODAL_TITLES = {
   INVITE_EDITOR: "Invite editor",
   INVITE_REVIEWER: "Invite reviewer",
   SEND_RESULT_TO_CHIEF: "Send result to Editor-in-Chief",
-  SEND_TO_PUBLISHER: "Send to publisher"
+  SEND_TO_PUBLISHER: "Send to publisher",
+  PUBLISH_ARTICLE: "Publish article",
 };

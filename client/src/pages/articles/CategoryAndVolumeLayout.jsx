@@ -2,58 +2,6 @@ import { Box, HStack, Icon } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaSortDown } from "react-icons/fa";
 
-const categories = [
-  {
-    id: 1,
-    name: "Category 1",
-    subs: [
-      {
-        id: 1,
-        name: "Subcategory 1 of category 1",
-        subs: [
-          { id: 1, name: "Subcategory 1 of category 2" },
-          { id: 2, name: "Subcategory 2 of category 2" },
-        ],
-      },
-      { id: 2, name: "Subcategory 2 of category 1" },
-    ],
-  },
-  {
-    id: 2,
-    name: "Category 2",
-    subs: [
-      { id: 1, name: "Subcategory 1 of category 2" },
-      { id: 2, name: "Subcategory 2 of category 2" },
-    ],
-  },
-];
-
-const years = [
-  {
-    id: 1,
-    name: "Year 2021",
-    subs: [
-      {
-        id: 1,
-        name: "Volume 1",
-        subs: [
-          { id: 1, name: "Volume 1" },
-          { id: 2, name: "Volume 2" },
-        ],
-      },
-      { id: 2, name: "Volume 2" },
-    ],
-  },
-  {
-    id: 2,
-    name: "Year 2022",
-    subs: [
-      { id: 1, name: "Volume 1" },
-      { id: 2, name: "Volume 2" },
-    ],
-  },
-];
-
 const ListItem = ({ item }) => {
   const [isShowChildList, setIsShowChildList] = useState(false);
 

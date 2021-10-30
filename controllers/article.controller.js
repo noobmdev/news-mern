@@ -9,7 +9,7 @@ const {
   INVITE_ARTICLE,
   EditorStatus,
   EmailTypes,
-  PublishStatus
+  PublishStatus,
 } = require("../constants");
 
 const { Article, Review, Constant, User } = require("../models");
@@ -38,15 +38,19 @@ exports.create = async (req, res) => {
     } = req.body;
     const _info = JSON.parse(info);
 
-    const manuscriptId = await Constant.findOneAndUpdate( {
-      constantType: ConstantTypes.MANUSCRIPT_ID 
-    }, {
-      constantType: ConstantTypes.MANUSCRIPT_ID,
-      value: 1
-    }, {
-      uppsert: true,
-      new: true
-    });
+    const manuscriptId = await Constant.findOneAndUpdate(
+      {
+        constantType: ConstantTypes.MANUSCRIPT_ID,
+      },
+      {
+        constantType: ConstantTypes.MANUSCRIPT_ID,
+        value: 1,
+      },
+      {
+        uppsert: true,
+        new: true,
+      }
+    );
 
     const _manuscriptId = manuscriptId ? +manuscriptId.value + 1 : "1";
 
@@ -157,15 +161,19 @@ exports.saveTmp = async (req, res) => {
     // await newArticle.save();
     let article;
 
-    const manuscriptId = await Constant.findOneAndUpdate( {
-      constantType: ConstantTypes.MANUSCRIPT_ID 
-    }, {
-      constantType: ConstantTypes.MANUSCRIPT_ID,
-      value: 1
-    }, {
-      uppsert: true,
-      new: true
-    });
+    const manuscriptId = await Constant.findOneAndUpdate(
+      {
+        constantType: ConstantTypes.MANUSCRIPT_ID,
+      },
+      {
+        constantType: ConstantTypes.MANUSCRIPT_ID,
+        value: 1,
+      },
+      {
+        uppsert: true,
+        new: true,
+      }
+    );
 
     const _manuscriptId = manuscriptId ? +manuscriptId.value + 1 : "1";
 
@@ -212,14 +220,16 @@ exports.edit = async (req, res) => {
 
     const manuscriptId = await Constant.findOneAndUpdate(
       {
-      constantType: ConstantTypes.MANUSCRIPT_ID 
-    }, {
-      constantType: ConstantTypes.MANUSCRIPT_ID,
-      value: 1
-    }, {
-      upsert: true,
-      new: true
-    }
+        constantType: ConstantTypes.MANUSCRIPT_ID,
+      },
+      {
+        constantType: ConstantTypes.MANUSCRIPT_ID,
+        value: 1,
+      },
+      {
+        upsert: true,
+        new: true,
+      }
     );
 
     const _manuscriptId = manuscriptId.value;
@@ -281,7 +291,11 @@ exports.updateArticleStatus = async (req, res) => {
     const { id } = req.params;
     let updateData = { ...req.body };
     if (req.body.status === ArticleStatus.WITH_EDITOR) {
-      updateData = { ...updateData, submissionDate: Date.now(), editorInChiefStatus: EditorChiefStatus.NEW_SUBMISSIONS };
+      updateData = {
+        ...updateData,
+        submissionDate: Date.now(),
+        editorInChiefStatus: EditorChiefStatus.NEW_SUBMISSIONS,
+      };
     }
     const article = await Article.findByIdAndUpdate(
       id,
@@ -314,7 +328,9 @@ exports.getOwner = async (req, res) => {
       case ROLES.AUTHOR:
         articles = await Article.find({
           author: req.user._id,
-        }).populate("author", ["firstname", "lastname", "email"]).sort({ createdAt: -1});
+        })
+          .populate("author", ["firstname", "lastname", "email"])
+          .sort({ createdAt: -1 });
         break;
 
       case ROLES.REVIEWER:
@@ -322,7 +338,8 @@ exports.getOwner = async (req, res) => {
           reviewer: req.user._id,
         })
           .populate("article")
-          .populate("article.researches").sort({ createdAt: -1});
+          .populate("article.researches")
+          .sort({ createdAt: -1 });
         break;
 
       case ROLES.EDITOR_IN_CHIEF:
@@ -330,20 +347,26 @@ exports.getOwner = async (req, res) => {
           status: {
             $nin: [ArticleStatus.INCOMPLETE, ArticleStatus.WAIT_APPROVE],
           },
-        }).populate("author", ["firstname", "lastname", "email"]).sort({ createdAt: -1});
+        })
+          .populate("author", ["firstname", "lastname", "email"])
+          .sort({ createdAt: -1 });
         break;
 
       case ROLES.EDITOR:
         articles = await Article.find({
           editor: req.user._id,
-          editorStatus: {$nin: [EditorStatus.COMPLETED]}
-        }).populate("author", ["firstname", "lastname", "email"]).sort({ createdAt: -1});
+          editorStatus: { $nin: [EditorStatus.COMPLETED] },
+        })
+          .populate("author", ["firstname", "lastname", "email"])
+          .sort({ createdAt: -1 });
         break;
 
       case ROLES.PUBLISHER:
         articles = await Article.find({
-          editorInChiefStatus: EditorChiefStatus.SENT_TO_PUBLISHER
-        }).populate("author", ["firstname", "lastname", "email"]).sort({ createdAt: -1});
+          editorInChiefStatus: EditorChiefStatus.SENT_TO_PUBLISHER,
+        })
+          .populate("author", ["firstname", "lastname", "email"])
+          .sort({ createdAt: -1 });
         break;
 
       default:
@@ -470,20 +493,29 @@ exports.updateReview = async (req, res) => {
       case UpdateReviewActions.DeclineInvitation:
         // updateData = { status: ReviewStatus.INCOMPLETE };
         // await Review.findByIdAndDelete(data.id);
-        updateData = { ...updateData,status: ReviewStatus.REJECTED, isDeleted: true };
+        updateData = {
+          ...updateData,
+          status: ReviewStatus.REJECTED,
+          isDeleted: true,
+        };
         break;
 
       case UpdateReviewActions.ApproveReview:
         // updateData = { status: ReviewStatus.INCOMPLETE };
         // await Review.findByIdAndDelete(data.id);
-        updateData = { ...updateData, status: ReviewStatus.COMPLETED, isCompleted: true, submissionDate: Date.now() };
+        updateData = {
+          ...updateData,
+          status: ReviewStatus.COMPLETED,
+          isCompleted: true,
+          submissionDate: Date.now(),
+        };
 
-        const article = await Article.findById(reviewExists.article)
-        if(!article?.editor) {
-          return res.status(400).send("Article invalid, no editor")
+        const article = await Article.findById(reviewExists.article);
+        if (!article?.editor) {
+          return res.status(400).send("Article invalid, no editor");
         }
-        const editor = await User.findById(article.editor)
-        sendMail(editor.email, EmailTypes.REVIEWER_RESULT)
+        const editor = await User.findById(article.editor);
+        sendMail(editor.email, EmailTypes.REVIEWER_RESULT);
 
         break;
 
@@ -530,13 +562,13 @@ exports.inviteReview = async (req, res) => {
         if (!editor) {
           return res.status(400).send("Email has not permission");
         }
-         await  Article.findByIdAndUpdate(articleId, {
-            editor: editor._id,
-            editorInChiefStatus: EditorChiefStatus.ASSIGNED_EDITOR,
-            dateDecision: Date.now(),
-            editorStatus: EditorStatus.NEW_INVITATION,
-          })
-          sendMail(editor.email, type, data)
+        await Article.findByIdAndUpdate(articleId, {
+          editor: editor._id,
+          editorInChiefStatus: EditorChiefStatus.ASSIGNED_EDITOR,
+          dateDecision: Date.now(),
+          editorStatus: EditorStatus.NEW_INVITATION,
+        });
+        sendMail(editor.email, type, data);
 
         break;
 
@@ -548,14 +580,21 @@ exports.inviteReview = async (req, res) => {
         if (!reviewer) {
           return res.status(400).send("Email has not permission");
         }
-       
+
+        const isExistReview = await Review.findOne({
+          article: articleId,
+          reviewer: reviewer._id,
+        });
+        if (isExistReview)
+          return res.status(400).send("Reviewer already is invited to review");
+
         await new Review({
           article: articleId,
           reviewer: reviewer._id,
-        }).save()
-        sendMail(editor.email, type, data)
+        }).save();
+        sendMail(reviewer.email, type, data);
         break;
-        
+
       case INVITE_ARTICLE.SEND_RESULT_TO_CHIEF:
         const editorChief = await User.findOne({
           role: { $mod: [ROLES.EDITOR_IN_CHIEF, 0] },
@@ -565,9 +604,9 @@ exports.inviteReview = async (req, res) => {
         }
         await Article.findByIdAndUpdate(articleId, {
           editorInChiefStatus: EditorChiefStatus.RESULT_EDITOR,
-          editorStatus: EditorStatus.COMPLETED
-        })
-        sendMail(editorChief.email, type)
+          editorStatus: EditorStatus.COMPLETED,
+        });
+        sendMail(editorChief.email, type);
         break;
 
       case INVITE_ARTICLE.SEND_TO_PUBLISHER:
@@ -578,13 +617,13 @@ exports.inviteReview = async (req, res) => {
         if (!publisher) {
           return res.status(400).send("Email has not permission");
         }
-       
+
         await Article.findByIdAndUpdate(articleId, {
           publisher: publisher._id,
           editorInChiefStatus: EditorChiefStatus.SENT_TO_PUBLISHER,
-          publisherStatus: PublishStatus.WAIT_FOR_PUBLISHING
-        })
-        sendMail(publisher.email, type, data)
+          publisherStatus: PublishStatus.WAIT_FOR_PUBLISHING,
+        });
+        sendMail(publisher.email, type, data);
         break;
 
       default:
@@ -611,14 +650,65 @@ exports.editorAccept = async (req, res) => {
       return res.status(400).send("Invalid article");
     }
 
-  
-      await Article.findByIdAndUpdate(articleId, {
-        dateDecision: Date.now(),
-        editorStatus: EditorStatus.INCOMPLETE_ASSIGNMENT,
-      })
+    await Article.findByIdAndUpdate(articleId, {
+      dateDecision: Date.now(),
+      editorStatus: EditorStatus.INCOMPLETE_ASSIGNMENT,
+    });
 
-      sendMail(editor.email, type, data)
-    
+    // sendMail(editor.email, type, data)
+
+    res.send("success");
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error);
+  }
+};
+
+exports.publisherAccept = async (req, res) => {
+  try {
+    const { id: articleId } = req.params;
+
+    const article = await Article.findOne({
+      _id: articleId,
+      publisher: req.user._id,
+    });
+    if (!article) {
+      return res.status(400).send("Invalid article");
+    }
+
+    // await Article.findByIdAndUpdate(articleId, {
+    //   dateDecision: Date.now(),
+    //   editorStatus: EditorStatus.INCOMPLETE_ASSIGNMENT,
+    // });
+
+    // sendMail(editor.email, type, data)
+
+    res.send("success");
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error);
+  }
+};
+
+exports.publishArticle = async (req, res) => {
+  try {
+    console.log(req.body);
+    const { id: articleId } = req.params;
+
+    const article = await Article.findOne({
+      _id: articleId,
+      publisher: req.user._id,
+    });
+    if (!article) {
+      return res.status(400).send("Invalid article");
+    }
+
+    // await Article.findByIdAndUpdate(articleId, {
+    //   dateDecision: Date.now(),
+    //   editorStatus: EditorStatus.INCOMPLETE_ASSIGNMENT,
+    // });
+
+    // sendMail(editor.email, type, data)
 
     res.send("success");
   } catch (error) {

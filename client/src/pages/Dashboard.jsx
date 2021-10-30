@@ -86,7 +86,6 @@ export const Dashboard = () => {
 
   useEffect(() => {
     if (user) {
-      console.log("urser", user.role);
       const firstRole = Object.keys(ROLES).find(
         (r) => user.role % ROLES[r] === 0
       );
@@ -95,7 +94,6 @@ export const Dashboard = () => {
   }, [user]);
 
   useEffect(() => {
-    console.log("role", role);
     if (role && menuItems[role]) {
       setMenu(menuItems[role]);
     }
