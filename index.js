@@ -5,6 +5,7 @@ const express = require("express");
 const path = require("path");
 const passport = require("passport");
 const cors = require("cors");
+const morgan = require("morgan");
 
 const { setupRoutes } = require("./routes/index");
 const { connectDB } = require("./config/mongoose");
@@ -17,6 +18,7 @@ const main = async () => {
   await connectDB();
 
   // middlewares
+  app.use(morgan("dev"));
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
   app.use(express.static(path.join(__dirname, "public")));

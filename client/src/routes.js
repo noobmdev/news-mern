@@ -11,6 +11,7 @@ import ReviewByRole from "pages/articles/reviews/ReviewByRole";
 import { ArticleDetail } from "pages/articles/detail/ArticleDetail";
 import { VolumesAndIssues } from "pages/VolumesAndIssues";
 import Account from "pages/auth/Account";
+import ForgotPassword from "pages/ForgotPassword";
 
 export const RouteTypes = {
   ALL: 0,
@@ -34,6 +35,12 @@ export const routes = [
   {
     path: "/auth/login",
     component: Login,
+    exact: true,
+    type: RouteTypes.ONLY_PUBLIC,
+  },
+  {
+    path: "/auth/forgot-password",
+    component: ForgotPassword,
     exact: true,
     type: RouteTypes.ONLY_PUBLIC,
   },

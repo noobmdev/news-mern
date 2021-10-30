@@ -7,6 +7,7 @@ const { registerSchema, loginSchema } = require("../validations/schemas");
 const { User } = require("../models");
 const { sendMail } = require("../services/sendMail");
 const { EmailTypes, ROLES } = require("../constants");
+const randomString = require("../utils/randomString");
 
 exports.postRegister = async (req, res) => {
   try {
@@ -115,6 +116,34 @@ exports.updateUser = async (req, res) => {
       new: true,
     });
     res.send(updateUser);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const email = req.body?.email;
+    if (!email) {
+      return res.status(400).send("Email is required");
+    }
+
+    const userExists = await User.findOne({ email });
+    if (!userExists) {
+      return res.status(400).send("Email is not exists");
+    }
+
+    const newPassword = randomString(8);
+
+    const hashPassword = await argon2.hash(newPassword);
+
+    await User.findByIdAndUpdate(userExists._id, {
+      password: hashPassword,
+    });
+    sendMail(email, EmailTypes.FORGOT_PASSWORD, { password: newPassword });
+
+    res.send("success");
   } catch (error) {
     console.log(error);
     res.status(500).json(error);

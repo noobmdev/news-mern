@@ -19,9 +19,9 @@ import { useHistory } from "react-router";
 import { axiosInstance } from "utils/axios";
 import * as yup from "yup";
 
-const registerValidationSchema = yup.object().shape({
+const profile = yup.object().shape({
   email: yup.string().email("email_invalid").required("email_required"),
-  password: yup.string().min(6).required(),
+  // password: yup.string().min(6).required(),
   firstname: yup.string().max(50).required(),
   lastname: yup.string().max(50).required(),
   phone: yup.string().required(),
@@ -40,11 +40,11 @@ const Account = () => {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useFormHook(registerValidationSchema);
+    reset,
+  } = useFormHook(profile);
   const history = useHistory();
 
-  const { user, majors } = useContext(GlobalContext);
-  console.log(user);
+  const { majors, user } = useContext(GlobalContext);
 
   const [countryCode, setCountryCode] = useState("VN");
   const [countryStates, setCountryStates] = useState([]);
@@ -54,25 +54,15 @@ const Account = () => {
 
   useEffect(() => {
     if (user) {
-      const {
-        email,
-        firstname,
-        lastname,
-        phone,
-        postcode,
-        country,
-        city_provine,
-        address,
-        university,
-        major,
-        research,
-      } = user;
+      reset(user);
+      console.log(user.major);
+      setMajorSelected(user.major);
     }
   }, [user]);
 
-  useEffect(() => {
-    !!majors?.length && setMajorSelected(majors[0]._id);
-  }, [majors]);
+  // useEffect(() => {
+  //   !!majors?.length && setMajorSelected(majors[0]._id);
+  // }, [majors]);
 
   useEffect(() => {
     if (countryCode) {
@@ -105,6 +95,20 @@ const Account = () => {
       <Box w="48em">
         <form>
           <Grid templateColumns="repeat(2, 1fr)" gap="4">
+            {/* <FormControl
+              isInvalid={!!errors?.name?.message}
+              errortext={errors?.name?.message}
+              isRequired
+            >
+              <FormLabel>{t("username")}</FormLabel>
+              <Input
+                name="username"
+                placeholder="Username"
+                {...register("username")}
+              />
+              <FormErrorMessage>{errors?.username?.message}</FormErrorMessage>
+            </FormControl> */}
+
             <FormControl
               isInvalid={!!errors?.email?.message}
               errortext={errors?.email?.message}
@@ -119,34 +123,38 @@ const Account = () => {
               <FormErrorMessage>{errors?.email?.message}</FormErrorMessage>
             </FormControl>
 
-            <FormControl
+            <GridItem colStart="1">
+              <FormControl
+                isInvalid={!!errors?.firstname?.message}
+                errortext={errors?.firstname?.message}
+                isRequired
+              >
+                <FormLabel>{t("firstname")}</FormLabel>
+                <Input
+                  name="firstname"
+                  placeholder={t("firstname")}
+                  {...register("firstname")}
+                />
+                <FormErrorMessage>
+                  {errors?.firstname?.message}
+                </FormErrorMessage>
+              </FormControl>
+            </GridItem>
+
+            {/* <FormControl
               isInvalid={!!errors?.password?.message}
               errortext={errors?.password?.message}
               isRequired
             >
-              <FormLabel>{t("password")}</FormLabel>
+              <FormLabel>{t("password_confirm")}</FormLabel>
               <Input
                 type="password"
-                placeholder={t("password")}
+                placeholder="Password"
                 name="password"
                 {...register("password")}
               />
               <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>
-            </FormControl>
-
-            <FormControl
-              isInvalid={!!errors?.firstname?.message}
-              errortext={errors?.firstname?.message}
-              isRequired
-            >
-              <FormLabel>{t("firstname")}</FormLabel>
-              <Input
-                name="firstname"
-                placeholder={t("firstname")}
-                {...register("firstname")}
-              />
-              <FormErrorMessage>{errors?.firstname?.message}</FormErrorMessage>
-            </FormControl>
+            </FormControl> */}
 
             <FormControl
               isInvalid={!!errors?.lastname?.message}
@@ -278,8 +286,8 @@ const Account = () => {
               <Select
                 name="major"
                 {...register("major")}
-                onChange={(e) => setMajorSelected(e.target.value)}
-                defaultValue=""
+                // onChange={(e) => setMajorSelected(e.target.value)}
+                // defaultValue=""
               >
                 <option value="" style={{ display: "none" }}>
                   {t("choose_major")}
@@ -303,14 +311,14 @@ const Account = () => {
                 <Select
                   name="research"
                   {...register("research")}
-                  defaultValue=""
+                  // defaultValue=""
                 >
                   <option value="" style={{ display: "none" }}>
                     {t("choose_research")}
                   </option>
                   {majors
                     .find((m) => m._id === majorSelected)
-                    .researches.map((r) => (
+                    ?.researches.map((r) => (
                       <option key={r._id} value={r._id}>
                         {r.name}
                       </option>
@@ -332,7 +340,7 @@ const Account = () => {
                   isLoading={isSubmitting}
                   disabled={!!errors?.email || !!errors?.password}
                 >
-                  {t("register")}
+                  {t("update")}
                 </Button>
               </Box>
             </GridItem>

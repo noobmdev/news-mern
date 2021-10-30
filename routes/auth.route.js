@@ -5,6 +5,7 @@ const {
   postLogin,
   getUsers,
   updateUser,
+  forgotPassword,
 } = require("../controllers/auth.controller");
 
 const { isAuth } = require("../middlewares/isAuth");
@@ -13,9 +14,7 @@ const { ROLES } = require("../constants");
 
 authRoute.route("/register").post(postRegister);
 authRoute.route("/login").post(postLogin);
-authRoute.route("/test").get(isAuth, hasRole([ROLES.USER]), (req, res) => {
-  res.send("authenticated");
-});
+authRoute.route("/forgot-password").post(forgotPassword);
 
 authRoute.route("/users").get(isAuth, hasRole([ROLES.ADMIN]), getUsers);
 

@@ -20,6 +20,11 @@ exports.sendMail = async (to, type, data = undefined) => {
         htmlBody = `<b>Your account is registered in my web app.<a href='${process.env.FRONTEND_URI}/auth/login'>you can login now</a></b>`;
         break;
 
+      case EmailTypes.FORGOT_PASSWORD:
+        subject = "Forgot password";
+        htmlBody = `<b><div>New password: ${data.password}</div><a href='${process.env.FRONTEND_URI}/auth/login'>you can login now</a></b>`;
+        break;
+
       case INVITE_ARTICLE.INVITE_EDITOR:
         subject = data?.subject;
         htmlBody = `<b>You are invited to review article.<a href='${process.env.FRONTEND_URI}/articles/${ROLES.EDITOR}/management'>View</a></b><div>${data?.content}</div>`;
@@ -39,7 +44,7 @@ exports.sendMail = async (to, type, data = undefined) => {
         subject = "Editor-in-Chief send Publisher";
         htmlBody = `Editor-in-Chief send Publisher`;
         break;
-        
+
       default:
         break;
     }
