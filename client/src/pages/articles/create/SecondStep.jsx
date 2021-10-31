@@ -6,6 +6,7 @@ import {
   VStack,
   Button,
   Input,
+  HStack,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
@@ -13,7 +14,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { ArticleAuthors } from "./ArticleAuthors";
 
 export const SecondStep = ({ articleInfo, setArticleInfo }) => {
-  const [keywords, setKeywords] = useState(["", "", ""]);
+  const [keywords, setKeywords] = useState(new Array(6).fill(""));
 
   useEffect(() => {
     if (keywords.every((key) => key === ""))
@@ -61,28 +62,22 @@ export const SecondStep = ({ articleInfo, setArticleInfo }) => {
         }}
       />
 
-      <Box textAlign="right">
-        Từ khóa <span className="required-field">(*)</span>
-      </Box>
-      <Grid templateColumns="5em 1fr" gap="4" placeItems="center">
+      <Box textAlign="right">Từ khóa</Box>
+      <Grid templateColumns="repeat(2, 1fr)" gap="4" placeItems="center">
         {keywords.map((_, idx) => (
-          <>
-            <Box>Keyword {idx + 1}</Box>
+          <HStack>
+            <Box fontSize="sm" whiteSpace="nowrap">
+              Keyword {idx + 1}
+            </Box>
             <Input
               value={keywords[idx]}
-              placeholder="Keywords, max 6 words"
+              placeholder="Keywords"
               onChange={(e) => {
-                const value = e.target.value;
-                const regex = /[\s|\.|\,|\;|\:|\'|\"|\?|\(|\)]+/gim;
-                if (value.split(regex).length <= 6) {
-                  keywords[idx] = e.target.value;
-                  setKeywords([...keywords]);
-                } else {
-                  return alert("Keyword must be less than 6 keyword");
-                }
+                keywords[idx] = e.target.value;
+                setKeywords([...keywords]);
               }}
             />
-          </>
+          </HStack>
         ))}
       </Grid>
       {/* <Textarea

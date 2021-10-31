@@ -14,6 +14,7 @@ import { countries } from "assets/countries-states.json";
 import { GlobalContext } from "context/GlobalContext";
 import { useFormHook } from "hooks/useFormHook";
 import { useTranslate } from "hooks/useTranslate";
+import jwtDecode from "jwt-decode";
 import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { axiosInstance } from "utils/axios";
@@ -41,10 +42,11 @@ const Account = () => {
     register,
     formState: { errors, isSubmitting },
     reset,
+    setValue,
   } = useFormHook(profile);
   const history = useHistory();
 
-  const { majors, user } = useContext(GlobalContext);
+  const { majors, user, setCurrentUser } = useContext(GlobalContext);
 
   const [countryCode, setCountryCode] = useState("VN");
   const [countryStates, setCountryStates] = useState([]);
@@ -81,11 +83,17 @@ const Account = () => {
   }, [countryStates]);
 
   function onSubmit(values) {
+    console.log(values);
     axiosInstance
-      .post("/auth/register", values)
-      .then((_) => {
-        alert("Register success");
-        history.push("/auth/login");
+      .put("/auth/users", values)
+      .then((res) => {
+        const { token } = res.data;
+        if (token) {
+          const decoded = jwtDecode(token);
+          setCurrentUser(decoded);
+          localStorage.setItem("token", token);
+        }
+        alert("Update success");
       })
       .catch((err) => console.error(err));
   }
@@ -95,20 +103,6 @@ const Account = () => {
       <Box w="48em">
         <form>
           <Grid templateColumns="repeat(2, 1fr)" gap="4">
-            {/* <FormControl
-              isInvalid={!!errors?.name?.message}
-              errortext={errors?.name?.message}
-              isRequired
-            >
-              <FormLabel>{t("username")}</FormLabel>
-              <Input
-                name="username"
-                placeholder="Username"
-                {...register("username")}
-              />
-              <FormErrorMessage>{errors?.username?.message}</FormErrorMessage>
-            </FormControl> */}
-
             <FormControl
               isInvalid={!!errors?.email?.message}
               errortext={errors?.email?.message}
@@ -286,7 +280,10 @@ const Account = () => {
               <Select
                 name="major"
                 {...register("major")}
-                // onChange={(e) => setMajorSelected(e.target.value)}
+                onChange={(e) => {
+                  setMajorSelected(e.target.value);
+                  setValue("research", undefined);
+                }}
                 // defaultValue=""
               >
                 <option value="" style={{ display: "none" }}>
@@ -308,11 +305,7 @@ const Account = () => {
                 isRequired
               >
                 <FormLabel>{t("research")}</FormLabel>
-                <Select
-                  name="research"
-                  {...register("research")}
-                  // defaultValue=""
-                >
+                <Select name="research" {...register("research")}>
                   <option value="" style={{ display: "none" }}>
                     {t("choose_research")}
                   </option>

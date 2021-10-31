@@ -33,7 +33,6 @@ exports.create = async (req, res) => {
       isPosted,
       wherePosted,
       canShareManuscript,
-      isAcceptTerm,
       info,
     } = req.body;
     const _info = JSON.parse(info);
@@ -62,6 +61,7 @@ exports.create = async (req, res) => {
         ..._info,
         keywords: JSON.parse(_info.keywords).join("; "),
         manuscriptId: _generateManuscriptId,
+        author: _info?.authors?.find((a) => a?.id === req.user._id),
       },
     });
 
@@ -242,6 +242,7 @@ exports.edit = async (req, res) => {
         ..._info,
         keywords: JSON.parse(_info.keywords).join("; "),
         manuscriptId: _generateManuscriptId,
+        author: _info?.authors?.find((a) => a?.id === req.user._id),
       },
     });
 
@@ -703,10 +704,13 @@ exports.publishArticle = async (req, res) => {
       return res.status(400).send("Invalid article");
     }
 
-    // await Article.findByIdAndUpdate(articleId, {
-    //   dateDecision: Date.now(),
-    //   editorStatus: EditorStatus.INCOMPLETE_ASSIGNMENT,
-    // });
+    await Article.findByIdAndUpdate(articleId, {
+      dateDecision: Date.now(),
+      status: ArticleStatus.ACCEPTED,
+      editorInChiefStatus: EditorChiefStatus.PUBLISHED,
+      publisherStatus: PublishStatus.PUBLISHED,
+      ...req.body,
+    });
 
     // sendMail(editor.email, type, data)
 

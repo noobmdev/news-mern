@@ -122,6 +122,43 @@ exports.updateUser = async (req, res) => {
   }
 };
 
+exports.updateProfile = async (req, res) => {
+  try {
+    const { _id: userId } = req.user;
+    const userExists = await User.findById(userId);
+    if (!userExists) {
+      return res.status(400).json({ user: "NOT_FOUND" });
+    }
+
+    const updateUser = await User.findByIdAndUpdate(userId, req.body, {
+      new: true,
+    });
+    const payload = {
+      _id: updateUser._id,
+      firstname: updateUser.firstname,
+      lastname: updateUser.lastname,
+      email: updateUser.email,
+      role: updateUser.role,
+      phone: updateUser.phone,
+      postcode: updateUser.postcode,
+      country: updateUser.country,
+      city_provine: updateUser.city_provine,
+      address: updateUser.address,
+      university: updateUser.university,
+      major: updateUser.major,
+      research: updateUser.research,
+    };
+    const token = await jwt.sign(payload, process.env.SECRET_KEY_JWT, {
+      expiresIn: "1d",
+    });
+
+    res.json({ token });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+};
+
 exports.forgotPassword = async (req, res) => {
   try {
     const email = req.body?.email;

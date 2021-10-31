@@ -3,7 +3,7 @@ const {
   ArticleStatus,
   EditorChiefStatus,
   EditorStatus,
-  PublishStatus
+  PublishStatus,
 } = require("../constants");
 
 const articleSchema = mongoose.Schema({
@@ -115,6 +115,20 @@ const articleSchema = mongoose.Schema({
   publisher: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",
+  },
+  publicationCode: {
+    type: String,
+  },
+  pageNumber: {
+    type: String,
+  },
+  volume: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "volumes_issues",
+  },
+  issue: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "volumes_issues",
   },
   createdAt: {
     type: Number,

@@ -63,9 +63,22 @@
             <% }); %>
           </td>
         </tr>
+
+        <tr>
+          <td class="col-1">Corresponding author</td>
+          <td class="col-2">
+            <div>
+              Name: <%= author.firstname %> <%= author.lastname %>. Work Unit:
+              <%= author.workUnit %>. Email: <%= author.email %>.
+            </div>
+          </td>
+        </tr>
+
         <tr>
           <td class="col-1">Funding</td>
-          <td class="col-2"><%= article.prizeDetail %></td>
+          <td class="col-2">
+            <%= article.prizeDetail ? article.prizeDetail : "NO" %>
+          </td>
         </tr>
       </table>
     </div>

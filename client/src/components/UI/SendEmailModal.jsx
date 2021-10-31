@@ -20,6 +20,8 @@ import { axiosInstance } from "utils/axios";
 function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
   const { volumes } = useContext(GlobalContext);
 
+  const [publicationCode, setPublicationCode] = useState("");
+  const [pageNumber, setPageNumber] = useState("");
   const [selectedVolume, setSelectedVolume] = useState();
   const [selectedIssue, setSelectedIssue] = useState();
 
@@ -55,7 +57,7 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
     setContent("");
   };
 
-  function handleSend() {
+  const handleSendInvite = () => {
     const reEmail =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!reEmail.test(String(to).toLowerCase())) {
@@ -88,6 +90,41 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
           } else alert("Something went error");
         });
     }
+  };
+
+  const handlePublish = () => {
+    if (!publicationCode || !pageNumber || !selectedVolume || !selectedIssue) {
+      return alert("Fill all required field");
+    }
+    if (window.confirm("Are you OK?")) {
+      axiosInstance
+        .post(`/articles/${articleId}/publish`, {
+          publicationCode,
+          pageNumber,
+          volume: selectedVolume,
+          issue: selectedIssue,
+        })
+        .then((res) => {
+          setRefresh && setRefresh((pre) => !pre);
+          resetState();
+          alert("Publish success");
+        })
+        .catch((err) => {
+          if (typeof err.response?.data === "string") {
+            alert(err.response?.data);
+          } else alert("Something went error");
+        });
+    }
+  };
+
+  function handleSend() {
+    switch (title) {
+      case MODAL_TITLES.PUBLISH_ARTICLE:
+        return handlePublish();
+
+      default:
+        return handleSendInvite();
+    }
   }
 
   const renderBody = () => {
@@ -99,13 +136,13 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
             <HStack>
               <Input
                 placeholder="Mã số xuất bản"
-                value={to}
-                onChange={(e) => setTo(e.target.value)}
+                value={publicationCode}
+                onChange={(e) => setPublicationCode(e.target.value)}
               />
               <Input
                 placeholder="Page"
-                value={to}
-                onChange={(e) => setTo(e.target.value)}
+                value={pageNumber}
+                onChange={(e) => setPageNumber(e.target.value)}
               />
             </HStack>
             <HStack>
