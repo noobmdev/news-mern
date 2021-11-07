@@ -61,7 +61,7 @@ exports.create = async (req, res) => {
         ..._info,
         keywords: JSON.parse(_info.keywords).join("; "),
         manuscriptId: _generateManuscriptId,
-        author: _info?.authors?.find((a) => a?.id === req.user._id),
+        author: _info?.authors?.find((a) => a?.id == req.user._id),
       },
     });
 
@@ -158,7 +158,6 @@ exports.saveTmp = async (req, res) => {
       };
     }
 
-    // await newArticle.save();
     let article;
 
     const manuscriptId = await Constant.findOneAndUpdate(
@@ -170,7 +169,7 @@ exports.saveTmp = async (req, res) => {
         value: 1,
       },
       {
-        uppsert: true,
+        upsert: true,
         new: true,
       }
     );
@@ -242,7 +241,7 @@ exports.edit = async (req, res) => {
         ..._info,
         keywords: JSON.parse(_info.keywords).join("; "),
         manuscriptId: _generateManuscriptId,
-        author: _info?.authors?.find((a) => a?.id === req.user._id),
+        author: _info?.authors?.find((a) => a?.id == req.user._id),
       },
     });
 

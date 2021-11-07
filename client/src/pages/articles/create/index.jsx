@@ -38,7 +38,7 @@ const NewArticle = () => {
   const [articleInfo, setArticleInfo] = useState({
     title: "",
     summary: "",
-    keywords: "",
+    keywords: new Array(6).fill(""),
     authors: [],
     isPrize: 0,
     prizeDetail: "",
@@ -49,7 +49,8 @@ const NewArticle = () => {
   const [additionalFiles, setAdditionalFiles] = useState([]);
 
   useEffect(() => {
-    if (user)
+    if (user) {
+      console.log(user);
       setArticleInfo((pre) => ({
         ...pre,
         authors: [
@@ -62,6 +63,7 @@ const NewArticle = () => {
           },
         ],
       }));
+    }
   }, [user]);
 
   useEffect(() => {

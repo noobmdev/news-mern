@@ -68,8 +68,9 @@
           <td class="col-1">Corresponding author</td>
           <td class="col-2">
             <div>
-              Name: <%= author.firstname %> <%= author.lastname %>. Work Unit:
-              <%= author.workUnit %>. Email: <%= author.email %>.
+              Name: <%= article.author?.firstname %> <%=
+              article.author?.lastname %>. Work Unit: <%=
+              article.author?.workUnit %>. Email: <%= article.author?.email %>.
             </div>
           </td>
         </tr>

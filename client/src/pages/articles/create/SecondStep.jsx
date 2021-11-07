@@ -16,18 +16,18 @@ import { ArticleAuthors } from "./ArticleAuthors";
 export const SecondStep = ({ articleInfo, setArticleInfo }) => {
   const [keywords, setKeywords] = useState(new Array(6).fill(""));
 
-  useEffect(() => {
-    if (keywords.every((key) => key === ""))
-      setArticleInfo((pre) => ({
-        ...pre,
-        keywords: JSON.stringify([]),
-      }));
-    else
-      setArticleInfo((pre) => ({
-        ...pre,
-        keywords: JSON.stringify(keywords),
-      }));
-  }, [keywords]);
+  // useEffect(() => {
+  //   if (keywords.every((key) => key === ""))
+  //     setArticleInfo((pre) => ({
+  //       ...pre,
+  //       keywords: JSON.stringify([]),
+  //     }));
+  //   else
+  //     setArticleInfo((pre) => ({
+  //       ...pre,
+  //       keywords: JSON.stringify(keywords),
+  //     }));
+  // }, [keywords]);
 
   return (
     <Grid templateColumns="10em 1fr" gap="8">
@@ -64,17 +64,21 @@ export const SecondStep = ({ articleInfo, setArticleInfo }) => {
 
       <Box textAlign="right">Từ khóa</Box>
       <Grid templateColumns="repeat(2, 1fr)" gap="4" placeItems="center">
-        {keywords.map((_, idx) => (
+        {articleInfo.keywords.map((value, idx) => (
           <HStack>
             <Box fontSize="sm" whiteSpace="nowrap">
               Keyword {idx + 1}
             </Box>
             <Input
-              value={keywords[idx]}
+              value={value}
               placeholder="Keywords"
               onChange={(e) => {
+                const keywords = [...articleInfo.keywords];
                 keywords[idx] = e.target.value;
-                setKeywords([...keywords]);
+                setArticleInfo((pre) => ({
+                  ...pre,
+                  keywords,
+                }));
               }}
             />
           </HStack>

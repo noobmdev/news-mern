@@ -107,7 +107,7 @@ exports.updateUser = async (req, res) => {
     if (
       req.body.role &&
       req.body.role !== userExists.role &&
-      req.user.role !== ROLES.ADMIN
+      req.user.role % ROLES.ADMIN !== 0
     ) {
       return res.status(401).json({ user: "Unauthorized" });
     }
