@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const argon2 = require("argon2");
-const { ROLES } = require("../constants");
-const { User } = require("../models");
+const { ROLES, ConstantTypes } = require("../constants");
+const { User, Constant } = require("../models");
 
 exports.connectDB = async () => {
   try {

@@ -147,7 +147,7 @@ const NewArticle = () => {
 
       const formData = new FormData();
 
-      formData.append("type", articleType);
+      formData.append("major", articleType);
       formData.append("researches", JSON.stringify(researchTopics));
       formData.append("file", articleFile);
       additionalFiles.forEach((f) => formData.append("additionalFiles", f));
@@ -191,7 +191,7 @@ const NewArticle = () => {
     const formData = new FormData();
 
     if (articleType) {
-      formData.append("type", articleType);
+      formData.append("major", articleType);
     }
 
     if (researchTopics) {
@@ -397,15 +397,15 @@ const NewArticle = () => {
           </Button>
         </HStack>
 
-        {step === STEP.FOURTH ? (
-          <HStack spacing="2">
-            <Button
-              isLoading={loading}
-              colorScheme="blue"
-              onClick={handleSaveTmp}
-            >
-              Save
-            </Button>
+        <HStack spacing="2">
+          <Button
+            isLoading={loading}
+            colorScheme="blue"
+            onClick={handleSaveTmp}
+          >
+            Save
+          </Button>
+          {step === STEP.FOURTH ? (
             <Button
               isLoading={loading}
               colorScheme="blue"
@@ -413,15 +413,15 @@ const NewArticle = () => {
             >
               Build PDF for approval
             </Button>
-          </HStack>
-        ) : (
-          <Button
-            colorScheme="blue"
-            onClick={() => step < STEP.FOURTH && setStep((pre) => ++pre)}
-          >
-            Next
-          </Button>
-        )}
+          ) : (
+            <Button
+              colorScheme="blue"
+              onClick={() => step < STEP.FOURTH && setStep((pre) => ++pre)}
+            >
+              Next
+            </Button>
+          )}
+        </HStack>
       </HStack>
     </Box>
   );

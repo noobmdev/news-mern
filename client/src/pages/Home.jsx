@@ -17,6 +17,9 @@ import { Link } from "react-router-dom";
 import { axiosInstance } from "utils/axios";
 import RightMenu from "components/UI/RightMenu";
 import { GlobalContext } from "context/GlobalContext";
+import { useTranslate } from "hooks/useTranslate";
+import { timestampToDate } from "utils/time";
+import { CONSTANTS_DATA } from "keys";
 
 export const Home = () => {
   const { volumes } = useContext(GlobalContext);
@@ -30,10 +33,12 @@ export const Home = () => {
   });
   const [articles, setArticles] = useState([]);
 
+  const { t } = useTranslate();
+
   useEffect(() => {
     if (volumes?.length) {
       let latestVolume, latestIssue;
-      
+
       for (const volume of volumes) {
         latestVolume = !latestVolume
           ? volume
@@ -97,7 +102,7 @@ export const Home = () => {
               target="_blank"
             >
               <Box textDecor="underline" cursor="pointer">
-                Editorial board
+                {t("editorial_board")}
               </Box>
             </Link>
           </HStack>
@@ -111,7 +116,7 @@ export const Home = () => {
               target="_blank"
             >
               <Box textDecor="underline" cursor="pointer">
-                Aims & scrope
+                {t("aims_and_scope")}
               </Box>
             </Link>
           </HStack>
@@ -124,7 +129,7 @@ export const Home = () => {
               target="_blank"
             >
               <Box textDecor="underline" cursor="pointer">
-                Journal updates
+                {t("journal_updates")}
               </Box>
             </Link>
           </HStack>
@@ -134,15 +139,7 @@ export const Home = () => {
 
         <Box>
           <Collapse startingHeight={70} in={show}>
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus
-            terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer
-            labore wes anderson cred nesciunt sapiente ea proident. Anim
-            pariatur cliche reprehenderit, enim eiusmod high life accusamus
-            terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer
-            labore wes anderson cred nesciunt sapiente ea proident. Anim
-            pariatur cliche reprehenderit, enim eiusmod high life accusamus
-            terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer
-            labore wes anderson cred nesciunt sapiente ea proident.
+            {t(CONSTANTS_DATA.INTRO)}
           </Collapse>
           <Button size="sm" onClick={() => setShow((pre) => !pre)}>
             Show {show ? "Less" : "More"}
@@ -153,23 +150,27 @@ export const Home = () => {
 
         <Box>
           <Box fontSize="lg" fontWeight="semibold">
-            Editor-in-Chief
+            {t("editor_in_chief")}
           </Box>
-          <Box>Ramjee Prasad</Box>
+          <Box>{CONSTANTS_DATA.EDITOR_IN_CHIEF}</Box>
         </Box>
 
         <Grid templateColumns="repeat(3, 1fr)" gap="4">
           <Box>
-            <Box fontWeight="semibold">289 days</Box>
-            <Box>Submission to first decision</Box>
+            <Box fontWeight="semibold">
+              {CONSTANTS_DATA.SUBMISSION_FIRST_DECISION} {t("days")}
+            </Box>
+            <Box>{t("submission_to_first_decision")}</Box>
           </Box>
           <Box>
-            <Box fontWeight="semibold">385,364 (2020)</Box>
-            <Box>Downloads</Box>
+            <Box fontWeight="semibold">385,364</Box>
+            <Box>{t("downloads")}</Box>
           </Box>
           <Box>
-            <Box fontWeight="semibold">352 days</Box>
-            <Box>Submission to acceptance</Box>
+            <Box fontWeight="semibold">
+              {CONSTANTS_DATA.SUBMISSION_ACCEPTANCE} {t("days")}
+            </Box>
+            <Box>{t("submission_to_acceptance")}</Box>
           </Box>
         </Grid>
 
@@ -182,7 +183,7 @@ export const Home = () => {
           p="4"
         >
           <Box fontSize="lg" fontWeight="semibold">
-            Latest issue
+            {t("latest_issue")}
           </Box>
           <hr />
 
@@ -208,7 +209,7 @@ export const Home = () => {
               )}
 
               <Link to="/volumes-and-issues">
-                <Button>View all volumes and issues</Button>
+                <Button>{t("view_all_volumes_and_issues")}</Button>
               </Link>
             </VStack>
           </HStack>
@@ -223,7 +224,7 @@ export const Home = () => {
           p="4"
         >
           <Box fontSize="lg" fontWeight="semibold">
-            Latest articles
+            {t("latest_articles")}
           </Box>
           <hr />
 
@@ -247,20 +248,23 @@ export const Home = () => {
                     .map((author) => `${author.firstname} ${author.lastname}`)
                     .join("; ")}
                 </Box>
-                <Box color="gray.500">PaperPublished: 29 August 2021</Box>
+                <Box color="gray.500">
+                  {t("paper_published")}:{" "}
+                  {timestampToDate(article.publishedDate)}
+                </Box>
               </VStack>
               <hr />
             </Link>
           ))}
 
           <HStack>
-            <Box>This journal has</Box>
+            <Box>{t("this_journal_has")}</Box>
             <Box color="blue.600" cursor="pointer" textDecor="underline">
-              {articles.length} open access articles
+              {articles.length} {t("open_access_articles")}
             </Box>
           </HStack>
           <Box>
-            <Button color="blue.600">View all articles</Button>
+            <Button color="blue.600">{t("view_all_articles")}</Button>
           </Box>
         </VStack>
       </VStack>

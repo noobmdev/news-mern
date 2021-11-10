@@ -69,8 +69,8 @@
           <td class="col-2">
             <div>
               Name: <%= article.author?.firstname %> <%=
-              article.author?.lastname %>. Work Unit: <%=
-              article.author?.workUnit %>. Email: <%= article.author?.email %>.
+              article.author?.lastname %>. Email: <%= article.author?.email %>.
+              Work Unit: <%= article.author?.workUnit ?? "N/A" %>.
             </div>
           </td>
         </tr>

@@ -70,3 +70,10 @@ export const MODAL_TITLES = {
   SEND_TO_PUBLISHER: "Send to publisher",
   PUBLISH_ARTICLE: "Publish article",
 };
+
+export const CONSTANTS_DATA = {
+  EDITOR_IN_CHIEF: "Ramjee Prasad",
+  SUBMISSION_FIRST_DECISION: "289",
+  SUBMISSION_ACCEPTANCE: "352",
+  INTRO: "journal_intro",
+};

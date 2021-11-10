@@ -7,7 +7,7 @@ const {
 } = require("../constants");
 
 const articleSchema = mongoose.Schema({
-  type: {
+  major: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "majors_researches",
   },
@@ -17,7 +17,6 @@ const articleSchema = mongoose.Schema({
   },
   manuscriptId: {
     type: String,
-    required: true,
   },
   researches: [
     {
@@ -49,9 +48,11 @@ const articleSchema = mongoose.Schema({
     summary: {
       type: String,
     },
-    keywords: {
-      type: String,
-    },
+    keywords: [
+      {
+        type: String,
+      },
+    ],
     authors: [
       {
         id: {

@@ -72,7 +72,7 @@ const EditArticle = () => {
   useEffect(() => {
     if (article) {
       const {
-        type,
+        major,
         researches,
         file,
         additionalFiles,
@@ -81,10 +81,8 @@ const EditArticle = () => {
         canShareManuscript,
         info,
       } = article;
-
-      setArticleType(type);
+      setArticleType(major);
       setResearchTopics(researches);
-
       // setArticleFile(file);
       // setAdditionalFiles(additionalFiles);
       setIsPosted(isPosted ? "1" : "0");
@@ -94,14 +92,6 @@ const EditArticle = () => {
       setIsAcceptTerm(isAcceptTerm);
     }
   }, [article]);
-
-  useEffect(() => {
-    if (majors?.length) setArticleType(majors[0]._id);
-  }, [majors]);
-
-  useEffect(() => {
-    if (researchTopics?.length) setResearchTopics([]);
-  }, [articleType]);
 
   const handleFileAdditionalActions = (
     type,
@@ -176,7 +166,7 @@ const EditArticle = () => {
       setLoading(true);
       const formData = new FormData();
 
-      formData.append("type", articleType);
+      formData.append("major", articleType);
       formData.append("researches", JSON.stringify(researchTopics));
       formData.append("file", articleFile);
       additionalFiles.forEach((f) => formData.append("additionalFiles", f));
@@ -200,6 +190,46 @@ const EditArticle = () => {
     } else {
       alert("Please fill all required field");
     }
+  };
+
+  const handleSaveTmp = () => {
+    setLoading(true);
+
+    const formData = new FormData();
+
+    if (articleType) {
+      formData.append("major", articleType);
+    }
+
+    if (researchTopics) {
+      formData.append("researches", JSON.stringify(researchTopics));
+    }
+
+    if (articleFile) {
+      formData.append("file", articleFile);
+    }
+
+    if (additionalFiles.length) {
+      additionalFiles.forEach((f) => formData.append("additionalFiles", f));
+    }
+
+    formData.append("id", id);
+    formData.append("isPosted", isPosted);
+    formData.append("wherePosted", wherePosted);
+    formData.append("canShareManuscript", canShareManuscript);
+    formData.append("info", JSON.stringify(articleInfo));
+
+    axiosInstance
+      .post("/articles/save", formData)
+      .then((res) => {
+        console.log(res.data);
+        alert("Save article success");
+        history.push(`/articles/${ROLES.AUTHOR}/management`);
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
   };
 
   const renderStep = () => {
@@ -373,22 +403,31 @@ const EditArticle = () => {
         >
           Back
         </Button>
-        {step === STEP.FOURTH ? (
+        <HStack spacing="2">
           <Button
             isLoading={loading}
             colorScheme="blue"
-            onClick={handleSubmitArticle}
+            onClick={handleSaveTmp}
           >
-            Build PDF and Edit
+            Save
           </Button>
-        ) : (
-          <Button
-            colorScheme="blue"
-            onClick={() => step < STEP.FOURTH && setStep((pre) => ++pre)}
-          >
-            Next
-          </Button>
-        )}
+          {step === STEP.FOURTH ? (
+            <Button
+              isLoading={loading}
+              colorScheme="blue"
+              onClick={handleSubmitArticle}
+            >
+              Build PDF for approval
+            </Button>
+          ) : (
+            <Button
+              colorScheme="blue"
+              onClick={() => step < STEP.FOURTH && setStep((pre) => ++pre)}
+            >
+              Next
+            </Button>
+          )}
+        </HStack>
       </HStack>
     </Box>
   );

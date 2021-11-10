@@ -1,4 +1,5 @@
 {
+  "journal_intro": "Giới thiệu về tạp chí",
   "login": "Đăng nhập",
   "register": "Đăng ký",
   "username": "Tên đằng nhập",
@@ -20,5 +21,26 @@
   "create_new_account": "Tạo tài khoản mới?",
   "choose_major": "Chọn chuyên ngành",
   "choose_research": "Chọn hướng nghiên cứu",
-  "update": "Cập nhật"
+  "update": "Cập nhật",
+  "editorial_board": "Ban biên tập",
+  "aims_and_scope": "Mục tiêu và phạm vi",
+  "journal_updates": "Cập nhật tạp chí",
+  "editor_in_chief": "Tổng biên tập",
+  "submission_to_first_decision": "Thời gian phản hồi đâu tiên",
+  "downloads": "Lượt tải",
+  "submission_to_acceptance": "Bài báo được chấp nhận",
+  "for_author": "Dành cho tác giả",
+  "submit_guidelines": "Gửi hướng dẫn",
+  "contact_the_journal": "Liên hệ với tạp chí",
+  "submit_manuscript": "Gửi manuscript",
+  "explore": "Khám phá",
+  "volume_and_issues": "Volume and issues",
+  "latest_issue": "Latest issue",
+  "view_all_volumes_and_issues": "Xem tất cả volumes and issues",
+  "latest_articles": "Bài báo mới nhất",
+  "view_all_articles": "Xem tất cả bài báo",
+  "paper_published": "Bài báo xuất bản",
+  "open_access_articles": "bài báo có thể truy cập",
+  "this_journal_has": "Tạp chí có",
+  "days": "ngày"
 }

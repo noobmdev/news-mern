@@ -37,7 +37,10 @@ export const FirstStep = ({
         <Box>
           <Select
             value={articleType}
-            onChange={(e) => setArticleType(e.target.value)}
+            onChange={(e) => {
+              setArticleType(e.target.value);
+              setResearchTopics([]);
+            }}
           >
             {majors.map((m) => (
               <option key={m._id} value={m._id}>

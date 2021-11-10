@@ -1,8 +1,11 @@
 import { VStack, Box, Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import React from "react";
+import { useTranslate } from "hooks/useTranslate";
 
 const RightMenu = () => {
+  const { t } = useTranslate();
+
   return (
     <VStack align="stretch" w="35%" minW="80" maxW="96">
       <VStack
@@ -15,7 +18,7 @@ const RightMenu = () => {
         color="blue.600"
       >
         <Box color="black" fontSize="xl" fontWeight="semibold">
-          For authors
+          {t("for_author")}
         </Box>
         <hr />
 
@@ -25,7 +28,7 @@ const RightMenu = () => {
           }}
           target="_blank"
         >
-          <Box cursor="pointer">Submit guidelines</Box>
+          <Box cursor="pointer">{t("submit_guidelines")}</Box>
         </Link>
         <Link
           to={{
@@ -33,12 +36,12 @@ const RightMenu = () => {
           }}
           target="_blank"
         >
-          <Box cursor="pointer">Contact the jounal</Box>
+          <Box cursor="pointer">{t("contact_the_journal")}</Box>
         </Link>
 
         <Link to="/articles/new">
           <Button colorScheme="blue" w="100%">
-            Submit manuscript
+            {t("submit_manuscript")}
           </Button>
         </Link>
       </VStack>
@@ -53,12 +56,12 @@ const RightMenu = () => {
         color="blue.600"
       >
         <Box color="black" fontSize="xl" fontWeight="semibold">
-          Explore
+          {t("explore")}
         </Box>
         <hr />
 
         <Link to="/volumes-and-issues">
-          <Box>Volume and issues</Box>
+          <Box>{t("volume_and_issues")}</Box>
         </Link>
       </VStack>
     </VStack>

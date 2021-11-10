@@ -37,7 +37,7 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
   }, [volumes]);
 
   useEffect(() => {
-    console.log(selectedVolume);
+    // console.log(selectedVolume);
     if (selectedVolume?.issues?.length) {
       setSelectedIssue(selectedVolume?.issues[0]?._id);
     }
@@ -128,7 +128,7 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
   }
 
   const renderBody = () => {
-    console.log(title, MODAL_TITLES.SEND_TO_PUBLISHER);
+    // console.log(title, MODAL_TITLES.SEND_TO_PUBLISHER);
     switch (title) {
       case MODAL_TITLES.PUBLISH_ARTICLE:
         return (

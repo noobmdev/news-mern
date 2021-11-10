@@ -28,7 +28,7 @@ exports.create = async (req, res) => {
     const additionalFiles = req.files.additionalFiles ?? [];
 
     const {
-      type,
+      major,
       researches,
       isPosted,
       wherePosted,
@@ -37,29 +37,21 @@ exports.create = async (req, res) => {
     } = req.body;
     const _info = JSON.parse(info);
 
-    const manuscriptId = await Constant.findOneAndUpdate(
-      {
-        constantType: ConstantTypes.MANUSCRIPT_ID,
-      },
-      {
-        constantType: ConstantTypes.MANUSCRIPT_ID,
-        value: 1,
-      },
-      {
-        uppsert: true,
-        new: true,
-      }
-    );
+    let manuscriptId = await Constant.findOne({
+      constantType: ConstantTypes.MANUSCRIPT_ID,
+    });
 
-    const _manuscriptId = manuscriptId ? +manuscriptId.value + 1 : "1";
-
+    if (!manuscriptId) {
+      manuscriptId = { value: 0 };
+    }
+    const _manuscriptId = Number(manuscriptId.value) + 1;
     const _generateManuscriptId = generateManuscriptId(_manuscriptId);
 
     await buildPdf({
       filename: file[0].filename,
       article: {
         ..._info,
-        keywords: JSON.parse(_info.keywords).join("; "),
+        keywords: _info.keywords?.join("; ") ?? "",
         manuscriptId: _generateManuscriptId,
         author: _info?.authors?.find((a) => a?.id == req.user._id),
       },
@@ -67,7 +59,7 @@ exports.create = async (req, res) => {
 
     const newArticle = new Article({
       manuscriptId: _generateManuscriptId,
-      type,
+      major,
       author: req.user._id,
       researches: JSON.parse(researches),
       isPosted: !!+isPosted,
@@ -86,20 +78,18 @@ exports.create = async (req, res) => {
     });
 
     await newArticle.save();
-    if (manuscriptId) {
-      await Constant.findByIdAndUpdate(
-        manuscriptId._id,
-        {
-          value: _manuscriptId,
-        },
-        { upsert: true }
-      );
-    } else {
-      await new Constant({
+    await Constant.findOneAndUpdate(
+      {
+        constantType: ConstantTypes.MANUSCRIPT_ID,
+      },
+      {
         constantType: ConstantTypes.MANUSCRIPT_ID,
         value: _manuscriptId,
-      }).save();
-    }
+      },
+      {
+        upsert: true,
+      }
+    );
 
     res.json(newArticle);
   } catch (error) {
@@ -112,6 +102,7 @@ exports.saveTmp = async (req, res) => {
   try {
     let data = {
       author: req.user._id,
+      ...req.body,
     };
     if (req.files?.file) {
       data = {
@@ -128,25 +119,6 @@ exports.saveTmp = async (req, res) => {
       additionalFiles,
     };
 
-    if (req.body.type) {
-      data = { ...data, type: req.body.type };
-    }
-    if (req.body.researches) {
-      data = { ...data, researches: JSON.parse(req.body.researches) };
-    }
-    if (req.body.isPosted) {
-      data = { ...data, isPosted: !!+req.body.isPosted };
-    }
-    if (req.body.wherePosted) {
-      data = { ...data, type: req.body.wherePosted };
-    }
-    if (req.body.canShareManuscript) {
-      data = { ...data, canShareManuscript: !!+req.body.canShareManuscript };
-    }
-    if (req.body.canShareManuscript) {
-      data = { ...data, canShareManuscript: !!+req.body.canShareManuscript };
-    }
-
     if (req.body.info) {
       let _info = JSON.parse(req.body.info);
       data = {
@@ -157,26 +129,14 @@ exports.saveTmp = async (req, res) => {
         },
       };
     }
+    if (req.body.researches) {
+      data = {
+        ...data,
+        researches: JSON.parse(req.body.researches),
+      };
+    }
 
     let article;
-
-    const manuscriptId = await Constant.findOneAndUpdate(
-      {
-        constantType: ConstantTypes.MANUSCRIPT_ID,
-      },
-      {
-        constantType: ConstantTypes.MANUSCRIPT_ID,
-        value: 1,
-      },
-      {
-        upsert: true,
-        new: true,
-      }
-    );
-
-    const _manuscriptId = manuscriptId ? +manuscriptId.value + 1 : "1";
-
-    const _generateManuscriptId = generateManuscriptId(_manuscriptId);
 
     if (req.body.id) {
       article = await Article.findByIdAndUpdate(req.body.id, data, {
@@ -186,7 +146,6 @@ exports.saveTmp = async (req, res) => {
     } else {
       article = new Article({
         ...data,
-        manuscriptId: _generateManuscriptId,
       });
       await article.save();
     }
@@ -217,29 +176,21 @@ exports.edit = async (req, res) => {
     } = req.body;
     const _info = JSON.parse(info);
 
-    const manuscriptId = await Constant.findOneAndUpdate(
-      {
-        constantType: ConstantTypes.MANUSCRIPT_ID,
-      },
-      {
-        constantType: ConstantTypes.MANUSCRIPT_ID,
-        value: 1,
-      },
-      {
-        upsert: true,
-        new: true,
-      }
-    );
+    let manuscriptId = await Constant.findOne({
+      constantType: ConstantTypes.MANUSCRIPT_ID,
+    });
 
-    const _manuscriptId = manuscriptId.value;
-
+    if (!manuscriptId) {
+      manuscriptId = { value: 0 };
+    }
+    const _manuscriptId = Number(manuscriptId.value) + 1;
     const _generateManuscriptId = generateManuscriptId(_manuscriptId);
 
     await buildPdf({
       filename: file[0].filename,
       article: {
         ..._info,
-        keywords: JSON.parse(_info.keywords).join("; "),
+        keywords: _info.keywords?.join("; ") ?? "",
         manuscriptId: _generateManuscriptId,
         author: _info?.authors?.find((a) => a?.id == req.user._id),
       },
@@ -264,6 +215,18 @@ exports.edit = async (req, res) => {
       status: ArticleStatus.WAIT_APPROVE,
       statusDate: Date.now(),
     });
+    await Constant.findOneAndUpdate(
+      {
+        constantType: ConstantTypes.MANUSCRIPT_ID,
+      },
+      {
+        constantType: ConstantTypes.MANUSCRIPT_ID,
+        value: _manuscriptId,
+      },
+      {
+        upsert: true,
+      }
+    );
 
     res.json({ success: true });
   } catch (error) {
@@ -276,7 +239,10 @@ exports.get = async (req, res) => {
   try {
     const type = req.query.type;
     const filter = type ? { status: type } : {};
-    const articles = await Article.find(filter)
+    const articles = await Article.find({
+      ...filter,
+      status: ArticleStatus.ACCEPTED,
+    })
       .populate("author", ["firstname", "lastname", "email"])
       .sort({ _id: -1 });
     res.json(articles);
@@ -692,7 +658,6 @@ exports.publisherAccept = async (req, res) => {
 
 exports.publishArticle = async (req, res) => {
   try {
-    console.log(req.body);
     const { id: articleId } = req.params;
 
     const article = await Article.findOne({
@@ -708,6 +673,7 @@ exports.publishArticle = async (req, res) => {
       status: ArticleStatus.ACCEPTED,
       editorInChiefStatus: EditorChiefStatus.PUBLISHED,
       publisherStatus: PublishStatus.PUBLISHED,
+      publishedDate: Date.now(),
       ...req.body,
     });
 

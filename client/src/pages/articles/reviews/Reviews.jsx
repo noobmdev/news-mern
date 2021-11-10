@@ -226,9 +226,9 @@ const Reviews = () => {
     ApproveReview: "approve_review",
   };
 
-  const handleUpdateReview = (review, type, check = false) => {
+  const handleUpdateReview = (review, type, uncheck = false) => {
     if (
-      !check &&
+      uncheck &&
       (!strongAspects?.trim() ||
         !weakAspects?.trim() ||
         !recommendedChanges?.trim())
@@ -256,7 +256,13 @@ const Reviews = () => {
               ...pre.slice(idx + 1, pre.length),
             ]);
           }
-          alert(check ? "Accept review success" : "Review success");
+          let msg =
+            UpdateReviewActions.DeclineInvitation === type
+              ? "Decline success"
+              : !uncheck
+              ? "Accept review success"
+              : "Review success";
+          alert(msg);
         })
         .catch((err) => console.log(err));
     }
@@ -267,9 +273,10 @@ const Reviews = () => {
   const viewResultReview = (articleId) => {
     setOpenReviewResultModal(true);
 
-    axiosInstance
-      .get(`/articles/${articleId}/reviews`)
-      .then((res) => setReviewResults(res.data));
+    axiosInstance.get(`/articles/${articleId}/reviews`).then((res) => {
+      const _res = res.data.filter((r) => r.isCompleted);
+      setReviewResults(_res);
+    });
   };
 
   const renderActionLinksByRole = (item) => {
@@ -336,6 +343,17 @@ const Reviews = () => {
                   Send email
                 </Button>
               </>
+            );
+
+          case ARTICLE_STATUSES.ACCEPTED:
+            return (
+              <Button
+                size="xs"
+                onClick={() => hanldeDownload(item)}
+                colorScheme="blue"
+              >
+                View PDF
+              </Button>
             );
         }
 
@@ -444,7 +462,12 @@ const Reviews = () => {
           case EDITOR_IN_CHIEF_STATUSES.ASSIGNED_EDITOR:
             return (
               <>
-                <Button size="xs" mt="1" colorScheme="blue">
+                <Button
+                  onClick={() => hanldeDownload(item)}
+                  size="xs"
+                  mt="1"
+                  colorScheme="blue"
+                >
                   View pdf
                 </Button>
                 <Button size="xs" mt="1" colorScheme="red">
@@ -456,7 +479,12 @@ const Reviews = () => {
           case EDITOR_IN_CHIEF_STATUSES.RESULT_EDITOR:
             return (
               <>
-                <Button size="xs" mt="1" colorScheme="green">
+                <Button
+                  onClick={() => hanldeDownload(item)}
+                  size="xs"
+                  mt="1"
+                  colorScheme="green"
+                >
                   View pdf
                 </Button>
                 <Button
@@ -478,7 +506,12 @@ const Reviews = () => {
 
           case EDITOR_IN_CHIEF_STATUSES.REJECTED_DECISION:
             return (
-              <Button size="xs" mt="1" colorScheme="blue">
+              <Button
+                onClick={() => hanldeDownload(item)}
+                size="xs"
+                mt="1"
+                colorScheme="blue"
+              >
                 View PDF
               </Button>
             );
@@ -486,7 +519,12 @@ const Reviews = () => {
           case EDITOR_IN_CHIEF_STATUSES.RETURN_AUTHOR:
             return (
               <>
-                <Button size="xs" mt="1" colorScheme="blue">
+                <Button
+                  onClick={() => hanldeDownload(item)}
+                  size="xs"
+                  mt="1"
+                  colorScheme="blue"
+                >
                   View pdf
                 </Button>
                 <Button size="xs" mt="1" colorScheme="red">
@@ -497,7 +535,12 @@ const Reviews = () => {
 
           case EDITOR_IN_CHIEF_STATUSES.SENT_TO_PUBLISHER:
             return (
-              <Button size="xs" mt="1" colorScheme="blue">
+              <Button
+                onClick={() => hanldeDownload(item)}
+                size="xs"
+                mt="1"
+                colorScheme="blue"
+              >
                 View PDF
               </Button>
             );
@@ -509,7 +552,12 @@ const Reviews = () => {
           case EDITOR_STATUSES.NEW_INVITATION:
             return (
               <>
-                <Button size="xs" mt="1" colorScheme="blue">
+                <Button
+                  onClick={() => hanldeDownload(item)}
+                  size="xs"
+                  mt="1"
+                  colorScheme="blue"
+                >
                   View pdf
                 </Button>
                 <Button
@@ -559,7 +607,12 @@ const Reviews = () => {
           case EDITOR_STATUSES.REJECTED:
             return (
               <>
-                <Button size="xs" mt="1" colorScheme="blue">
+                <Button
+                  onClick={() => hanldeDownload(item)}
+                  size="xs"
+                  mt="1"
+                  colorScheme="blue"
+                >
                   View pdf
                 </Button>
               </>
@@ -572,7 +625,12 @@ const Reviews = () => {
           case PUBLISHER_STATUSES.WAIT_FOR_PUBLISHING:
             return (
               <>
-                <Button size="xs" mt="1" colorScheme="blue">
+                <Button
+                  onClick={() => hanldeDownload(item)}
+                  size="xs"
+                  mt="1"
+                  colorScheme="blue"
+                >
                   View pdf
                 </Button>
                 <Button
@@ -588,32 +646,14 @@ const Reviews = () => {
 
           case PUBLISHER_STATUSES.PUBLISHED:
             return (
-              <>
-                <Button
-                  size="xs"
-                  mt="1"
-                  colorScheme="blue"
-                  onClick={() => handleOpenModalSendResultChief(item._id)}
-                >
-                  Send result to TBT
-                </Button>
-                <Button
-                  size="xs"
-                  mt="1"
-                  colorScheme="green"
-                  onClick={() => handleEditorInviteReviewers(item._id)}
-                >
-                  Invite Reviewer
-                </Button>
-                <Button
-                  size="xs"
-                  mt="1"
-                  colorScheme="red"
-                  onClick={() => viewResultReview(item._id)}
-                >
-                  View result of reviewer
-                </Button>
-              </>
+              <Button
+                onClick={() => hanldeDownload(item)}
+                size="xs"
+                mt="1"
+                colorScheme="blue"
+              >
+                View pdf
+              </Button>
             );
         }
 
@@ -881,7 +921,7 @@ const Reviews = () => {
           <ModalCloseButton />
           <ModalBody>
             <VStack align="stretch" spacing="4">
-              {reviewResults?.length ? (
+              {reviewResults?.length &&
                 reviewResults.map((review, idx) => (
                   <Box>
                     <Box fontSize="xl">Reviewer {idx + 1}</Box>
@@ -900,10 +940,7 @@ const Reviews = () => {
                     <Box>Recommended changes: {review.recommendedChanges}</Box>
                     <hr />
                   </Box>
-                ))
-              ) : (
-                <Box>Loading...</Box>
-              )}
+                ))}
             </VStack>
           </ModalBody>
         </ModalContent>

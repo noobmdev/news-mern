@@ -9,8 +9,6 @@ export default function withRole(WrappedComponent, rolesAccepted = []) {
 
     const [loading, setLoading] = useState(true);
 
-    console.log(rolesAccepted, user);
-
     useEffect(() => {
       if (
         rolesAccepted.length &&
