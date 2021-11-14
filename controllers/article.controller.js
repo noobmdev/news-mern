@@ -184,7 +184,14 @@ exports.edit = async (req, res) => {
       manuscriptId = { value: 0 };
     }
     const _manuscriptId = Number(manuscriptId.value) + 1;
-    const _generateManuscriptId = generateManuscriptId(_manuscriptId);
+    let _generateManuscriptId = generateManuscriptId(_manuscriptId);
+
+    const articleExist = await Article.findById(id);
+    if (articleExist.manuscriptId) {
+      _generateManuscriptId = articleExist.manuscriptId;
+    } else {
+      _generateManuscriptId = generateManuscriptId(_manuscriptId);
+    }
 
     await buildPdf({
       filename: file[0].filename,
@@ -195,8 +202,8 @@ exports.edit = async (req, res) => {
         author: _info?.authors?.find((a) => a?.id == req.user._id),
       },
     });
-
     await Article.findByIdAndUpdate(id, {
+      manuscriptId: _generateManuscriptId,
       type,
       author: req.user._id,
       researches: JSON.parse(researches),
@@ -238,13 +245,43 @@ exports.edit = async (req, res) => {
 exports.get = async (req, res) => {
   try {
     const type = req.query.type;
-    const filter = type ? { status: type } : {};
+    const query = req.query.q;
+    let filter = type ? { status: type } : {};
+    if (query) {
+      filter = {
+        ...filter,
+        $or: [
+          {
+            "info.title": { $regex: new RegExp(query, "gi") },
+          },
+          {
+            "info.authors": {
+              $elemMatch: {
+                $or: [
+                  {
+                    firstname: { $regex: new RegExp(query, "gi") },
+                  },
+                  {
+                    lastname: { $regex: new RegExp(query, "gi") },
+                  },
+                  {
+                    email: { $regex: new RegExp(query, "gi") },
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      };
+    }
+    console.log("filter", filter);
     const articles = await Article.find({
       ...filter,
       status: ArticleStatus.ACCEPTED,
     })
       .populate("author", ["firstname", "lastname", "email"])
       .sort({ _id: -1 });
+    console.log("articles", articles);
     res.json(articles);
   } catch (error) {
     console.error(error);

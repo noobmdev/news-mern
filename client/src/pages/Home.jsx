@@ -20,6 +20,8 @@ import { GlobalContext } from "context/GlobalContext";
 import { useTranslate } from "hooks/useTranslate";
 import { timestampToDate } from "utils/time";
 import { CONSTANTS_DATA } from "keys";
+import { useLocation } from "react-router";
+import queryString from "query-string";
 
 export const Home = () => {
   const { volumes } = useContext(GlobalContext);
@@ -62,14 +64,23 @@ export const Home = () => {
     }
   }, [volumes]);
 
+  const location = useLocation();
+  console.log(location);
+
+  const { q } = queryString.parse(location.search);
+
   useEffect(() => {
+    let path = "/articles";
+    if (q) {
+      path = `/articles?q=${q}`;
+    }
     axiosInstance
-      .get("/articles")
+      .get(path)
       .then((res) => {
         setArticles(res.data);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [q]);
 
   const handleChangePage = (page) => {
     console.log(page);

@@ -14,11 +14,21 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslate } from "hooks/useTranslate";
 import { TriangleDownIcon } from "@chakra-ui/icons";
+import { useHistory } from "react-router";
 
 export const Layout = ({ children }) => {
   const { isAuthenticated, user, language, setLanguage, getLists, logout } =
     useContext(GlobalContext);
   const { t } = useTranslate();
+  const history = useHistory();
+
+  const [query, setQuery] = useState("");
+
+  const handleSearch = () => {
+    if (query.trim()) {
+      history.push(`?q=${query}`);
+    }
+  };
 
   useEffect(() => {
     getLists();
@@ -76,9 +86,14 @@ export const Layout = ({ children }) => {
               }}
             >
               <Box flex="1">
-                <Input />
+                <Input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
               </Box>
-              <Button colorScheme="teal">Go!</Button>
+              <Button colorScheme="teal" onClick={handleSearch}>
+                Go!
+              </Button>
             </HStack>
           </HStack>
 

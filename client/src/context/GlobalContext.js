@@ -3,7 +3,7 @@ import React, { createContext, useReducer } from "react";
 import { axiosInstance } from "utils/axios";
 
 import { AppReducer } from "./AppReducer";
-import { GET_LIST, LOGOUT, SET_LANGUAGE, SET_USER } from "./types";
+import { GET_LIST, LOGOUT, SET_LANGUAGE, SET_QUERY, SET_USER } from "./types";
 // import ToastNotify from 'components/common/ToastNotify';
 
 // init state
