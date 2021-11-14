@@ -82,6 +82,14 @@ const Reviews = () => {
           setCurrentStatuses(REVIEW_STATUSES);
           break;
 
+        case ROLES.EDITOR_IN_CHIEF:
+          setCurrentStatuses(EDITOR_IN_CHIEF_STATUSES);
+          break;
+
+        case ROLES.PUBLISHER:
+          setCurrentStatuses(PUBLISHER_STATUSES);
+          break;
+
         default:
           setCurrentStatuses([]);
           break;
@@ -306,7 +314,12 @@ const Reviews = () => {
                     Edit Submission
                   </Button>
                 </Link>
-                <Button size="xs" mt="1" colorScheme="red">
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="red"
+                  onClick={() => handleRemoveSubmission(item._id)}
+                >
                   Remove Submission
                 </Button>
               </>
@@ -320,7 +333,12 @@ const Reviews = () => {
                     Edit Submission
                   </Button>
                 </Link>
-                <Button size="xs" mt="1" colorScheme="red">
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="red"
+                  onClick={() => handleRemoveSubmission(item._id)}
+                >
                   Remove Submission
                 </Button>
                 <Button
@@ -704,40 +722,38 @@ const Reviews = () => {
   const renderList = () => {
     switch (+role) {
       case ROLES.AUTHOR:
-        return (
-          articles
-            // .filter((article) =>
-            //   setSearchQuery
-            //     ? new RegExp(searchQuery, "gi").test(article.info?.title) ||
-            //       new RegExp(searchQuery, "gi").test(article.author?.email) ||
-            //       new RegExp(searchQuery, "gi").test(
-            //         article.info?.authors
-            //           .map((author) => `${author.firstname} ${author.lastname}`)
-            //           .join(";")
-            //       )
-            //     : article
-            // )
-            .filter((article) =>
-              statusSelected ? article.status === statusSelected : article
-            )
-            .map((item, idx) => (
-              <Tr key={item._id}>
-                <Td>{idx + 1}</Td>
-                <Td maxW="20">{item.manuscriptId}</Td>
-                <Td>
-                  <Box className="two-line-text">{item.info?.title}</Box>
-                </Td>
-                <Td>{timestampToDate(item.submissionDate)}</Td>
-                <Td>{timestampToDate(item.submissionDate)}</Td>
-                <Td textAlign="center">{checkStatus(item.status)}</Td>
-                <Td isNumeric>
-                  <VStack textAlign="center">
-                    {renderActionLinksByRole(item)}
-                  </VStack>
-                </Td>
-              </Tr>
-            ))
-        );
+        return articles
+          .filter((article) =>
+            statusSelected
+              ? article.status === statusSelected
+              : article && searchQuery
+              ? new RegExp(searchQuery, "gi").test(article.info?.title) ||
+                new RegExp(searchQuery, "gi").test(article.manuscriptId) ||
+                new RegExp(searchQuery, "gi").test(article.author?.email) ||
+                new RegExp(searchQuery, "gi").test(
+                  article.info?.authors
+                    .map((author) => `${author.firstname} ${author.lastname}`)
+                    .join(";")
+                )
+              : true
+          )
+          .map((item, idx) => (
+            <Tr key={item._id}>
+              <Td>{idx + 1}</Td>
+              <Td maxW="20">{item.manuscriptId}</Td>
+              <Td>
+                <Box className="two-line-text">{item.info?.title}</Box>
+              </Td>
+              <Td>{timestampToDate(item.submissionDate)}</Td>
+              <Td>{timestampToDate(item.submissionDate)}</Td>
+              <Td textAlign="center">{checkStatus(item.status)}</Td>
+              <Td isNumeric>
+                <VStack textAlign="center">
+                  {renderActionLinksByRole(item)}
+                </VStack>
+              </Td>
+            </Tr>
+          ));
 
       case ROLES.REVIEWER:
         return articles.map((item, idx) => (
@@ -759,23 +775,40 @@ const Reviews = () => {
         ));
 
       case ROLES.EDITOR_IN_CHIEF:
-        return articles.map((item, idx) => (
-          <Tr key={item._id}>
-            <Td>{idx + 1}</Td>
-            <Td>{item.manuscriptId}</Td>
-            <Td>
-              <Box className="two-line-text">{item.info?.title}</Box>
-            </Td>
-            <Td>{timestampToDate(item.submissionDate)}</Td>
-            <Td>{timestampToDate(item.dateDecision)}</Td>
-            <Td textAlign="center">{checkStatus(item.editorInChiefStatus)}</Td>
-            <Td isNumeric>
-              <VStack textAlign="center">
-                {renderActionLinksByRole(item)}
-              </VStack>
-            </Td>
-          </Tr>
-        ));
+        return articles
+          .filter((article) =>
+            statusSelected
+              ? article.editorInChiefStatus === statusSelected
+              : article && searchQuery
+              ? new RegExp(searchQuery, "gi").test(article.info?.title) ||
+                new RegExp(searchQuery, "gi").test(article.manuscriptId) ||
+                new RegExp(searchQuery, "gi").test(article.author?.email) ||
+                new RegExp(searchQuery, "gi").test(
+                  article.info?.authors
+                    .map((author) => `${author.firstname} ${author.lastname}`)
+                    .join(";")
+                )
+              : true
+          )
+          .map((item, idx) => (
+            <Tr key={item._id}>
+              <Td>{idx + 1}</Td>
+              <Td>{item.manuscriptId}</Td>
+              <Td>
+                <Box className="two-line-text">{item.info?.title}</Box>
+              </Td>
+              <Td>{timestampToDate(item.submissionDate)}</Td>
+              <Td>{timestampToDate(item.dateDecision)}</Td>
+              <Td textAlign="center">
+                {checkStatus(item.editorInChiefStatus)}
+              </Td>
+              <Td isNumeric>
+                <VStack textAlign="center">
+                  {renderActionLinksByRole(item)}
+                </VStack>
+              </Td>
+            </Tr>
+          ));
 
       case ROLES.EDITOR:
         return articles.map((item, idx) => (
@@ -797,22 +830,37 @@ const Reviews = () => {
         ));
 
       case ROLES.PUBLISHER:
-        return articles.map((item, idx) => (
-          <Tr key={item._id}>
-            <Td>{idx + 1}</Td>
-            <Td>{item.manuscriptId}</Td>
-            <Td>
-              <Box className="two-line-text">{item.info?.title}</Box>
-            </Td>
-            <Td>{timestampToDate(item.submissionDate)}</Td>
-            <Td textAlign="center">{checkStatus(item.publisherStatus)}</Td>
-            <Td isNumeric>
-              <VStack textAlign="center">
-                {renderActionLinksByRole(item)}
-              </VStack>
-            </Td>
-          </Tr>
-        ));
+        return articles
+          .filter((article) =>
+            statusSelected
+              ? article.publisherStatus === statusSelected
+              : article && searchQuery
+              ? new RegExp(searchQuery, "gi").test(article.info?.title) ||
+                new RegExp(searchQuery, "gi").test(article.manuscriptId) ||
+                new RegExp(searchQuery, "gi").test(article.author?.email) ||
+                new RegExp(searchQuery, "gi").test(
+                  article.info?.authors
+                    .map((author) => `${author.firstname} ${author.lastname}`)
+                    .join(";")
+                )
+              : true
+          )
+          .map((item, idx) => (
+            <Tr key={item._id}>
+              <Td>{idx + 1}</Td>
+              <Td>{item.manuscriptId}</Td>
+              <Td>
+                <Box className="two-line-text">{item.info?.title}</Box>
+              </Td>
+              <Td>{timestampToDate(item.submissionDate)}</Td>
+              <Td textAlign="center">{checkStatus(item.publisherStatus)}</Td>
+              <Td isNumeric>
+                <VStack textAlign="center">
+                  {renderActionLinksByRole(item)}
+                </VStack>
+              </Td>
+            </Tr>
+          ));
 
       default:
         return;
@@ -879,6 +927,16 @@ const Reviews = () => {
 
   const handleApproveReview = (review) => {
     handleUpdateReview(review, UpdateReviewActions.ApproveReview, true);
+  };
+
+  const handleRemoveSubmission = (articleId) => {
+    return axiosInstance
+      .delete(`/articles/${articleId}`)
+      .then((_) => {
+        setRefresh((pre) => !pre);
+        alert("Delete success");
+      })
+      .catch(console.log);
   };
 
   // EDITOR_IN_CHIEF

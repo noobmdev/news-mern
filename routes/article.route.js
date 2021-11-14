@@ -17,6 +17,7 @@ const {
   publisherAccept,
   publishArticle,
   reject,
+  deleteArticle,
 } = require("../controllers/article.controller");
 const { uploadFile } = require("../services/uploadFile");
 
@@ -76,7 +77,8 @@ articleRoute
       },
     ]),
     edit
-  );
+  )
+  .delete(isAuth, hasRole([ROLES.AUTHOR]), deleteArticle);
 
 articleRoute
   .route("/:id/reviews")

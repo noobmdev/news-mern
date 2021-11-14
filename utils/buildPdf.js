@@ -92,3 +92,13 @@ const createPdfForm = (filename, article) => {
     );
   });
 };
+
+exports.removeFile = (filename) =>
+  new Promise((resolve, reject) => {
+    const removePath = path.join("public", "files", filename);
+    fs.unlink(removePath, (err) => {
+      if (err) throw reject(err);
+      else console.log("\nDeleted file: ", removePath);
+      resolve();
+    });
+  });

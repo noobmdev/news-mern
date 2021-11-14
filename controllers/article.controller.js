@@ -14,7 +14,7 @@ const {
 
 const { Article, Review, Constant, User } = require("../models");
 const { sendMail } = require("../services/sendMail");
-const { buildPdf } = require("../utils/buildPdf");
+const { buildPdf, removeFile } = require("../utils/buildPdf");
 
 const generateManuscriptId = (manuscriptId) => {
   const _manuscriptId = manuscriptId.toString().padStart(4, "0");
@@ -283,6 +283,31 @@ exports.get = async (req, res) => {
       .sort({ _id: -1 });
     console.log("articles", articles);
     res.json(articles);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error);
+  }
+};
+
+exports.deleteArticle = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const article = await Article.findById(id);
+
+    if (!article) {
+      return res.status(400).send("Invalid article");
+    }
+    if (article.author?.toString() != req.user._id.toString()) {
+      return res.status(401).send("Unauthorized");
+    }
+
+    if (article.file?.filename) {
+      await removeFile(article.file?.filename);
+    }
+
+    await article.remove();
+    res.json({ success: true });
   } catch (error) {
     console.error(error);
     return res.status(500).json(error);
@@ -608,6 +633,7 @@ exports.inviteReview = async (req, res) => {
         await Article.findByIdAndUpdate(articleId, {
           editorInChiefStatus: EditorChiefStatus.RESULT_EDITOR,
           editorStatus: EditorStatus.COMPLETED,
+          dateDecision: Date.now(),
         });
         sendMail(editorChief.email, type);
         break;
@@ -625,6 +651,7 @@ exports.inviteReview = async (req, res) => {
           publisher: publisher._id,
           editorInChiefStatus: EditorChiefStatus.SENT_TO_PUBLISHER,
           publisherStatus: PublishStatus.WAIT_FOR_PUBLISHING,
+          dateDecision: Date.now(),
         });
         sendMail(publisher.email, type, data);
         break;
