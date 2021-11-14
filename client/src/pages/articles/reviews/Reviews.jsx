@@ -445,16 +445,32 @@ const Reviews = () => {
           case EDITOR_IN_CHIEF_STATUSES.NEW_SUBMISSIONS:
             return (
               <>
-                <Button size="xs" mt="1" colorScheme="blue">
-                  Send back to author
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="blue"
+                  onClick={() => hanldeDownload(item)}
+                >
+                  View PDF
                 </Button>
                 <Button
                   size="xs"
                   mt="1"
-                  colorScheme="red"
+                  colorScheme="green"
                   onClick={() => handleOpenModal(item._id)}
                 >
                   Invite editor
+                </Button>
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="teal"
+                  onClick={() => handleOpenModalSendToPublisher(item._id)}
+                >
+                  Accept
+                </Button>
+                <Button size="xs" mt="1" colorScheme="red">
+                  Reject
                 </Button>
               </>
             );
@@ -470,7 +486,7 @@ const Reviews = () => {
                 >
                   View pdf
                 </Button>
-                <Button size="xs" mt="1" colorScheme="red">
+                <Button size="xs" mt="1" colorScheme="green">
                   Invite editor
                 </Button>
               </>
