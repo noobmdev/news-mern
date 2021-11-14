@@ -133,6 +133,19 @@ const Reviews = () => {
         color = "green";
         break;
 
+      case EDITOR_IN_CHIEF_STATUSES.NEW_SUBMISSIONS:
+        color = "gray";
+        break;
+      case EDITOR_IN_CHIEF_STATUSES.ASSIGNED_EDITOR:
+        color = "blue";
+        break;
+      case EDITOR_IN_CHIEF_STATUSES.PUBLISHED:
+        color = "teal";
+        break;
+      case EDITOR_IN_CHIEF_STATUSES.REJECTED_DECISION:
+        color = "red";
+        break;
+
       default:
         color = "green";
         break;
@@ -469,7 +482,12 @@ const Reviews = () => {
                 >
                   Accept
                 </Button>
-                <Button size="xs" mt="1" colorScheme="red">
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="red"
+                  onClick={() => handleRejectDecision(item._id)}
+                >
                   Reject
                 </Button>
               </>
@@ -499,19 +517,24 @@ const Reviews = () => {
                   onClick={() => hanldeDownload(item)}
                   size="xs"
                   mt="1"
-                  colorScheme="green"
+                  colorScheme="blue"
                 >
                   View pdf
                 </Button>
                 <Button
                   size="xs"
                   mt="1"
-                  colorScheme="blue"
+                  colorScheme="green"
                   onClick={() => handleOpenModalSendToPublisher(item._id)}
                 >
                   Accept
                 </Button>
-                <Button size="xs" mt="1" colorScheme="red">
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="red"
+                  onClick={() => handleRejectDecision(item._id)}
+                >
                   Reject
                 </Button>
                 <Button size="xs" mt="1" colorScheme="yellow">
@@ -890,6 +913,16 @@ const Reviews = () => {
   const handleCloseModal = () => {
     setCurrentModalArticle(undefined);
     onCloseSendEmailModal();
+  };
+
+  //EDITOR
+  const handleRejectDecision = (articleId) => {
+    return axiosInstance
+      .put(`/articles/${articleId}/reject`)
+      .then((_) => {
+        setRefresh((pre) => !pre);
+      })
+      .catch(console.log);
   };
 
   //EDITOR

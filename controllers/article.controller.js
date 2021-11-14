@@ -685,3 +685,31 @@ exports.publishArticle = async (req, res) => {
     return res.status(500).json(error);
   }
 };
+
+exports.reject = async (req, res) => {
+  try {
+    const { id: articleId } = req.params;
+
+    console.log("articleId", articleId);
+
+    const article = await Article.findOne({
+      _id: articleId,
+    });
+    if (!article) {
+      return res.status(400).send("Invalid article");
+    }
+
+    await Article.findByIdAndUpdate(articleId, {
+      dateDecision: Date.now(),
+      status: ArticleStatus.REJECTED,
+      editorInChiefStatus: EditorChiefStatus.REJECTED_DECISION,
+    });
+
+    // sendMail(editor.email, type, data)
+
+    res.send("success");
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error);
+  }
+};
