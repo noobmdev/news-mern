@@ -4,7 +4,8 @@ import withRole from "hocs/withRole";
 import { HANDLE_ACTIONS, ROLES } from "keys";
 import React, { useContext, useEffect, useState } from "react";
 import { FaCheck, FaDownload, FaExclamation } from "react-icons/fa";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
+import queryString from "query-string";
 import { axiosInstance } from "utils/axios";
 import { FirstStep } from "./FirstStep";
 import { SecondStep } from "./SecondStep";
@@ -20,6 +21,8 @@ const STEP = {
 
 const EditArticle = () => {
   const history = useHistory();
+  const location = useLocation();
+  const searchQuery = queryString.parse(location.search);
   const { id } = useParams();
   const { majors } = useContext(GlobalContext);
 
@@ -176,8 +179,11 @@ const EditArticle = () => {
       formData.append("canShareManuscript", canShareManuscript);
       formData.append("info", JSON.stringify(articleInfo));
 
+      const path = searchQuery.type
+        ? `/articles/${id}?type=resubmit`
+        : `/articles/${id}`;
       axiosInstance
-        .put(`/articles/${id}`, formData)
+        .put(path, formData)
         .then((res) => {
           console.log(res);
           alert("Edit article success");

@@ -120,11 +120,14 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
   function handleSend() {
     switch (title) {
       case MODAL_TITLES.PUBLISH_ARTICLE:
-        return handlePublish();
+        handlePublish();
+        break;
 
       default:
-        return handleSendInvite();
+        handleSendInvite();
+        break;
     }
+    onClose();
   }
 
   const renderBody = () => {

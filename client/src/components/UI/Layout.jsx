@@ -162,7 +162,7 @@ export const Layout = ({ children }) => {
                       </Box>
                     </Link>
 
-                    <Link to="/change-password">
+                    <Link to="/account/change-password">
                       <Box
                         p="1"
                         borderRadius="md"

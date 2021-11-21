@@ -7,6 +7,7 @@ const {
   updateUser,
   forgotPassword,
   updateProfile,
+  changePassword,
 } = require("../controllers/auth.controller");
 
 const { isAuth } = require("../middlewares/isAuth");
@@ -16,6 +17,7 @@ const { ROLES } = require("../constants");
 authRoute.route("/register").post(postRegister);
 authRoute.route("/login").post(postLogin);
 authRoute.route("/forgot-password").post(forgotPassword);
+authRoute.route("/change-password").post(isAuth, changePassword);
 
 authRoute
   .route("/users")

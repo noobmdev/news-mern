@@ -386,6 +386,24 @@ const Reviews = () => {
                 View PDF
               </Button>
             );
+
+          case ARTICLE_STATUSES.NEED_REVISION:
+            return (
+              <>
+                <Button
+                  size="xs"
+                  onClick={() => hanldeDownload(item)}
+                  colorScheme="blue"
+                >
+                  View PDF
+                </Button>
+                <Link to={`/articles/${item._id}/edit?type=resubmit`}>
+                  <Button size="xs" colorScheme="teal">
+                    Resubmit
+                  </Button>
+                </Link>
+              </>
+            );
         }
 
       //  role REVIEWER
@@ -555,7 +573,12 @@ const Reviews = () => {
                 >
                   Reject
                 </Button>
-                <Button size="xs" mt="1" colorScheme="yellow">
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="yellow"
+                  onClick={() => handleOpenModalRevisionToAuthor(item._id)}
+                >
                   Revision
                 </Button>
               </>
@@ -657,6 +680,14 @@ const Reviews = () => {
                   onClick={() => viewResultReview(item._id)}
                 >
                   View result of reviewer
+                </Button>
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="yellow"
+                  onClick={() => handleOpenModalRevisionToAuthor(item._id)}
+                >
+                  Send back to author
                 </Button>
               </>
             );
@@ -964,6 +995,12 @@ const Reviews = () => {
 
   const handleOpenModalSendToPublisher = (articleId) => {
     setCurrentModalTitle(MODAL_TITLES.SEND_TO_PUBLISHER);
+    setCurrentModalArticle(articleId);
+    onOpenSendMailModal();
+  };
+
+  const handleOpenModalRevisionToAuthor = (articleId) => {
+    setCurrentModalTitle(MODAL_TITLES.REVISION_AUTHOR);
     setCurrentModalArticle(articleId);
     onOpenSendMailModal();
   };

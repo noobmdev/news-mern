@@ -11,7 +11,7 @@ exports.EmailTypes = {
   REGISTER: 0,
   FORGOT_PASSWORD: 1,
   CHANGE_PASSWORD: 2,
-  REVIEWER_RESULT: "REVIEWER_RESULT"
+  REVIEWER_RESULT: "REVIEWER_RESULT",
 };
 
 exports.Lists = {
@@ -50,7 +50,7 @@ exports.EditorStatus = {
   REJECTED: "rejected",
   NEW_INVITATION: "new invitation",
   INCOMPLETE_ASSIGNMENT: "incomplete assignment",
-  COMPLETED: "completed"
+  COMPLETED: "completed",
 };
 
 exports.PublishStatus = {
@@ -69,5 +69,6 @@ exports.INVITE_ARTICLE = {
   INVITE_EDITOR: "Invite editor",
   INVITE_REVIEWER: "Invite reviewer",
   SEND_RESULT_TO_CHIEF: "Send result to Editor-in-Chief",
-  SEND_TO_PUBLISHER: "Send to publisher"
+  SEND_TO_PUBLISHER: "Send to publisher",
+  REVISION_AUTHOR: "Revision to author",
 };

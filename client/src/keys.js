@@ -69,6 +69,7 @@ export const MODAL_TITLES = {
   SEND_RESULT_TO_CHIEF: "Send result to Editor-in-Chief",
   SEND_TO_PUBLISHER: "Send to publisher",
   PUBLISH_ARTICLE: "Publish article",
+  REVISION_AUTHOR: "Revision to author",
 };
 
 export const CONSTANTS_DATA = {

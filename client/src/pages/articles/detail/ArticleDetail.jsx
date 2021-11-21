@@ -3,11 +3,12 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { axiosInstance } from "utils/axios";
 import { HiOutlineMail } from "react-icons/hi";
+import { timestampToDate } from "utils/time";
 
 export const ArticleDetail = () => {
   const [article, setArticle] = useState();
   const { id } = useParams();
-
+  console.log("article", article);
   useEffect(() => {
     if (id) {
       axiosInstance
@@ -38,7 +39,9 @@ export const ArticleDetail = () => {
     <HStack align="flex-start" spacing="16">
       <VStack flex="1" align="stretch" spacing="8">
         <VStack align="stretch" spacing="4">
-          <Box color="blue.600">Published: 28 August 2021</Box>
+          <Box color="blue.600">
+            Published: {timestampToDate(article.publishedDate)}
+          </Box>
           <Box fontSize="2xl" fontWeight="semibold">
             {article.info?.title}
           </Box>
@@ -58,6 +61,12 @@ export const ArticleDetail = () => {
                 </Box>
               </a>
             ))}
+          </HStack>
+          <HStack color="blue.600" spacing="4">
+            <Box>Volume: {article.volume?.name}.</Box>
+            <Box>Issue: {article.issue?.name}.</Box>
+            <Box>Publication Code: {article.publicationCode}.</Box>
+            <Box>Page Number: {article.pageNumber}.</Box>
           </HStack>
         </VStack>
 

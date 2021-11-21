@@ -186,3 +186,23 @@ exports.forgotPassword = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    const user = await User.findById(req.user._id);
+
+    const isMatch = await argon2.verify(user.password, currentPassword);
+    if (!isMatch) {
+      return res.status(400).send("password is wrong");
+    }
+
+    const newHashPassword = await argon2.hash(newPassword);
+    await User.findByIdAndUpdate(req.user._id, { password: newHashPassword });
+    res.send("success");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+};

@@ -160,8 +160,7 @@ exports.saveTmp = async (req, res) => {
 exports.edit = async (req, res) => {
   try {
     const { id } = req.params;
-
-    // const articleExists = await Article.findById(id)
+    const articleExists = await Article.findById(id);
 
     const file = req.files.file;
     const additionalFiles = req.files.additionalFiles ?? [];
@@ -188,7 +187,21 @@ exports.edit = async (req, res) => {
 
     const articleExist = await Article.findById(id);
     if (articleExist.manuscriptId) {
-      _generateManuscriptId = articleExist.manuscriptId;
+      if (req.query.type) {
+        const regex = /R[0-9]+$/gi;
+        if (regex.test(articleExist.manuscriptId)) {
+          const rebuildTime = articleExist.manuscriptId.match(/\d+$/)[0];
+          const _rebuildTime = +rebuildTime + 1;
+          _generateManuscriptId = articleExist.manuscriptId.replace(
+            regex,
+            `R${_rebuildTime}`
+          );
+        } else {
+          _generateManuscriptId = `${articleExist.manuscriptId}-R1`;
+        }
+      } else {
+        _generateManuscriptId = articleExist.manuscriptId;
+      }
     } else {
       _generateManuscriptId = generateManuscriptId(_manuscriptId);
     }
@@ -411,11 +424,10 @@ exports.getOwner = async (req, res) => {
 exports.getOne = async (req, res) => {
   try {
     const { id } = req.params;
-    const article = await Article.findById(id).populate("author", [
-      "firstname",
-      "lastname",
-      "email",
-    ]);
+    const article = await Article.findById(id)
+      .populate("author", ["firstname", "lastname", "email"])
+      .populate("volume", ["name"])
+      .populate("issue", ["name"]);
 
     res.json(article);
   } catch (error) {
@@ -575,7 +587,9 @@ exports.inviteReview = async (req, res) => {
       return res.status(400).send("Email receipts is required");
     }
 
-    const article = await Article.findById(articleId);
+    const article = await Article.findById(articleId).populate("author", [
+      "email",
+    ]);
 
     if (!article) {
       return res.status(400).send("Invalid article");
@@ -654,6 +668,17 @@ exports.inviteReview = async (req, res) => {
           dateDecision: Date.now(),
         });
         sendMail(publisher.email, type, data);
+        break;
+
+      case INVITE_ARTICLE.REVISION_AUTHOR:
+        if (to?.toLowerCase().trim() !== article.author?.email) {
+          return res.status(400).send("Invalid email of author");
+        }
+        await Article.findByIdAndUpdate(articleId, {
+          status: ArticleStatus.NEED_REVISION,
+          editorInChiefStatus: EditorChiefStatus.RETURN_AUTHOR,
+        });
+        article.author?.email && sendMail(article.author.email, type, data);
         break;
 
       default:

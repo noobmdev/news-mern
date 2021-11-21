@@ -12,6 +12,7 @@ import { ArticleDetail } from "pages/articles/detail/ArticleDetail";
 import { VolumesAndIssues } from "pages/VolumesAndIssues";
 import Account from "pages/auth/Account";
 import ForgotPassword from "pages/ForgotPassword";
+import ChangePassword from "pages/ChangePassword";
 
 export const RouteTypes = {
   ALL: 0,
@@ -101,6 +102,12 @@ export const routes = [
   {
     path: "/account",
     component: Account,
+    exact: true,
+    type: RouteTypes.ONLY_PRIVATE,
+  },
+  {
+    path: "/account/change-password",
+    component: ChangePassword,
     exact: true,
     type: RouteTypes.ONLY_PRIVATE,
   },
