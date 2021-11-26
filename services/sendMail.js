@@ -35,6 +35,21 @@ exports.sendMail = async (to, type, data = undefined) => {
         htmlBody = `Review article success`;
         break;
 
+      case EmailTypes.PUBLISHER_ACCEPT:
+        subject = "PUBLISHER_ACCEPT";
+        htmlBody = `PUBLISHER_ACCEPT`;
+        break;
+
+      case EmailTypes.PUBLISHED:
+        subject = "PUBLISHED";
+        htmlBody = `PUBLISHED`;
+        break;
+
+      case EmailTypes.REJECTED:
+        subject = "REJECTED";
+        htmlBody = `REJECTED`;
+        break;
+
       case INVITE_ARTICLE.SEND_RESULT_TO_CHIEF:
         subject = "Editor send result to Editor-in-Chief";
         htmlBody = `Editor send result to Editor-in-Chief`;

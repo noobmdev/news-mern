@@ -11,6 +11,7 @@ import {
 import React, { useContext } from "react";
 import { GlobalContext } from "context/GlobalContext";
 import RightMenu from "components/UI/RightMenu";
+import { Link } from "react-router-dom";
 
 export const VolumesAndIssues = () => {
   const { volumes } = useContext(GlobalContext);
@@ -25,8 +26,8 @@ export const VolumesAndIssues = () => {
 
         {volumes
           .sort((a, b) => b.createdAt - a.createdAt)
-          .map((volume) => (
-            <Box>
+          .map((volume, idx) => (
+            <Box key={idx}>
               <HStack justify="space-between">
                 <Box fontSize="xl" fontWeight="semibold">
                   {volume.name}
@@ -40,16 +41,18 @@ export const VolumesAndIssues = () => {
                   {volume.issues
                     .sort((a, b) => b.createdAt - a.createdAt)
                     .map((issue) => (
-                      <Tr>
-                        <Td>
-                          {issue.name}
-                          {issue.desc && (
-                            <Box color="gray.600" mt="2">
-                              {issue.desc}
-                            </Box>
-                          )}
-                        </Td>
-                      </Tr>
+                      <Link to={`/volumes-and-issues/${issue._id}`}>
+                        <Tr>
+                          <Td>
+                            {issue.name}
+                            {issue.desc && (
+                              <Box color="gray.600" mt="2">
+                                {issue.desc}
+                              </Box>
+                            )}
+                          </Td>
+                        </Tr>
+                      </Link>
                     ))}
                 </Tbody>
               </Table>

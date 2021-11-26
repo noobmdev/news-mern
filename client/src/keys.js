@@ -49,6 +49,7 @@ export const EDITOR_STATUSES = {
   REJECTED: "rejected",
   NEW_INVITATION: "new invitation",
   INCOMPLETE_ASSIGNMENT: "incomplete assignment",
+  MPLETED: "completed",
 };
 
 export const PUBLISHER_STATUSES = {

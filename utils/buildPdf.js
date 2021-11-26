@@ -4,11 +4,14 @@ const ejs = require("ejs");
 const path = require("path");
 const htmlPdf = require("html-pdf");
 
-module.exports.buildPdf = async ({ filename, article }) => {
-  await createPdfForm(filename, article);
+module.exports.buildPdf = async ({ filename, article, update = false }) => {
+  await createPdfForm(filename, article, update);
 
   const originalFilePath = path.join("public", "files", filename);
-  const formPath = `form_${filename}.pdf`;
+  let formPath = `form_${filename}.pdf`;
+  if (update) {
+    formPath = `form_${filename}`;
+  }
 
   const originalArticleBytes = fs.readFileSync(originalFilePath);
   const formArticleBytes = fs.readFileSync(formPath);
@@ -35,21 +38,26 @@ module.exports.buildPdf = async ({ filename, article }) => {
 
   const pdfBytes = await pdfDoc.save();
 
-  let pathBuild = path.join("public", "files", `build_${filename}.pdf`);
+  let pathBuild = path.join(
+    "public",
+    "files",
+    update ? filename : `build_${filename}.pdf`
+  );
   fs.open(pathBuild, "w", function (err, fd) {
     fs.write(fd, pdfBytes, 0, pdfBytes.length, null, function (err) {
       fs.close(fd, function () {
-        console.log("create build file success");
-        fs.unlink(originalFilePath, (err) => {
-          if (err) throw err;
+        fs.unlink(formPath, (err) => {
+          if (err) console.log(err);
           else {
-            console.log("\nDeleted file: ", originalFilePath);
-            fs.unlink(formPath, (err) => {
-              if (err) console.log(err);
-              else {
-                console.log("\nDeleted file: ", formPath);
-              }
-            });
+            console.log("\nDeleted file: ", formPath);
+            if (!update) {
+              fs.unlink(originalFilePath, (err) => {
+                if (err) throw err;
+                else {
+                  console.log("\nDeleted file: ", originalFilePath);
+                }
+              });
+            }
           }
         });
       });
@@ -57,7 +65,7 @@ module.exports.buildPdf = async ({ filename, article }) => {
   });
 };
 
-const createPdfForm = (filename, article) => {
+const createPdfForm = (filename, article, update = false) => {
   return new Promise((resolve, reject) => {
     ejs.renderFile(
       path.join(__dirname, "template.ejs"),
@@ -80,13 +88,16 @@ const createPdfForm = (filename, article) => {
           };
           htmlPdf
             .create(data, options)
-            .toFile(`form_${filename}.pdf`, function (err, data) {
-              if (err) {
-                reject(err);
-              } else {
-                resolve();
+            .toFile(
+              update ? `form_${filename}` : `form_${filename}.pdf`,
+              function (err, data) {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve();
+                }
               }
-            });
+            );
         }
       }
     );

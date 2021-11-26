@@ -120,7 +120,10 @@ const articleSchema = mongoose.Schema({
   publicationCode: {
     type: String,
   },
-  pageNumber: {
+  pageNumberStart: {
+    type: String,
+  },
+  pageNumberEnd: {
     type: String,
   },
   volume: {

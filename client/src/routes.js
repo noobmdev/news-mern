@@ -13,6 +13,12 @@ import { VolumesAndIssues } from "pages/VolumesAndIssues";
 import Account from "pages/auth/Account";
 import ForgotPassword from "pages/ForgotPassword";
 import ChangePassword from "pages/ChangePassword";
+import SubmissionGuidelines from "pages/SubmissionGuidelines";
+import ContactJournal from "pages/ContactJournal";
+import EditorialBoard from "pages/EditorialBoard";
+import AimsAndScope from "pages/AimsAndScope";
+import JournalUpdates from "pages/auth/JournalUpdates";
+import VolumeAndIssueDetail from "pages/VolumeAndIssueDetail";
 
 export const RouteTypes = {
   ALL: 0,
@@ -100,6 +106,12 @@ export const routes = [
     type: RouteTypes.ALL,
   },
   {
+    path: "/volumes-and-issues/:id",
+    component: VolumeAndIssueDetail,
+    exact: true,
+    type: RouteTypes.ALL,
+  },
+  {
     path: "/account",
     component: Account,
     exact: true,
@@ -110,5 +122,35 @@ export const routes = [
     component: ChangePassword,
     exact: true,
     type: RouteTypes.ONLY_PRIVATE,
+  },
+  {
+    path: "/submission-guidelines",
+    component: SubmissionGuidelines,
+    exact: true,
+    type: RouteTypes.ALL,
+  },
+  {
+    path: "/contact-the-journal",
+    component: ContactJournal,
+    exact: true,
+    type: RouteTypes.ALL,
+  },
+  {
+    path: "/editorial-board",
+    component: EditorialBoard,
+    exact: true,
+    type: RouteTypes.ALL,
+  },
+  {
+    path: "/aims-and-scope",
+    component: AimsAndScope,
+    exact: true,
+    type: RouteTypes.ALL,
+  },
+  {
+    path: "/journal-updates",
+    component: JournalUpdates,
+    exact: true,
+    type: RouteTypes.ALL,
   },
 ];

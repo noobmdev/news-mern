@@ -73,6 +73,7 @@ const Reviews = () => {
 
   useEffect(() => {
     if (role && !loading) {
+      console.log(role);
       switch (+role) {
         case ROLES.AUTHOR:
           setCurrentStatuses(ARTICLE_STATUSES);
@@ -84,6 +85,14 @@ const Reviews = () => {
 
         case ROLES.EDITOR_IN_CHIEF:
           setCurrentStatuses(EDITOR_IN_CHIEF_STATUSES);
+          break;
+
+        case ROLES.EDITOR:
+          setCurrentStatuses(EDITOR_STATUSES);
+          break;
+
+        case ROLES.REVIEWER:
+          setCurrentStatuses(REVIEW_STATUSES);
           break;
 
         case ROLES.PUBLISHER:
@@ -581,6 +590,14 @@ const Reviews = () => {
                 >
                   Revision
                 </Button>
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="red"
+                  onClick={() => viewResultReview(item._id)}
+                >
+                  View result of reviewer
+                </Button>
               </>
             );
 
@@ -648,7 +665,12 @@ const Reviews = () => {
                 >
                   Accept invitation
                 </Button>
-                <Button size="xs" mt="1" colorScheme="red">
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="red"
+                  onClick={() => handleEditorDecline(item._id)}
+                >
                   Decline invitation
                 </Button>
               </>
@@ -787,23 +809,44 @@ const Reviews = () => {
           ));
 
       case ROLES.REVIEWER:
-        return articles.map((item, idx) => (
-          <Tr key={item._id}>
-            <Td>{idx + 1}</Td>
-            <Td>{item.article?.manuscriptId}</Td>
-            <Td>
-              <Box className="two-line-text">{item.article?.info?.title}</Box>
-            </Td>
-            <Td>{timestampToDate(item.createdAt)}</Td>
-            <Td>{timestampToDate(item.submissionDate)}</Td>
-            <Td textAlign="center">{checkStatus(item.status)}</Td>
-            <Td isNumeric>
-              <VStack textAlign="center">
-                {renderActionLinksByRole(item)}
-              </VStack>
-            </Td>
-          </Tr>
-        ));
+        return articles
+          .filter((article) =>
+            statusSelected
+              ? article.status === statusSelected
+              : article && searchQuery
+              ? new RegExp(searchQuery, "gi").test(
+                  article.article?.info?.title
+                ) ||
+                new RegExp(searchQuery, "gi").test(
+                  article.article?.manuscriptId
+                ) ||
+                new RegExp(searchQuery, "gi").test(
+                  article.article?.author?.email
+                ) ||
+                new RegExp(searchQuery, "gi").test(
+                  article.info?.authors
+                    .map((author) => `${author.firstname} ${author.lastname}`)
+                    .join(";")
+                )
+              : true
+          )
+          .map((item, idx) => (
+            <Tr key={item._id}>
+              <Td>{idx + 1}</Td>
+              <Td>{item.article?.manuscriptId}</Td>
+              <Td>
+                <Box className="two-line-text">{item.article?.info?.title}</Box>
+              </Td>
+              <Td>{timestampToDate(item.createdAt)}</Td>
+              <Td>{timestampToDate(item.submissionDate)}</Td>
+              <Td textAlign="center">{checkStatus(item.status)}</Td>
+              <Td isNumeric>
+                <VStack textAlign="center">
+                  {renderActionLinksByRole(item)}
+                </VStack>
+              </Td>
+            </Tr>
+          ));
 
       case ROLES.EDITOR_IN_CHIEF:
         return articles
@@ -842,23 +885,38 @@ const Reviews = () => {
           ));
 
       case ROLES.EDITOR:
-        return articles.map((item, idx) => (
-          <Tr key={item._id}>
-            <Td>{idx + 1}</Td>
-            <Td>{item.manuscriptId}</Td>
-            <Td>
-              <Box className="two-line-text">{item.info?.title}</Box>
-            </Td>
-            <Td>{timestampToDate(item.submissionDate)}</Td>
-            <Td>{timestampToDate(item.dateDecision)}</Td>
-            <Td textAlign="center">{checkStatus(item.editorStatus)}</Td>
-            <Td isNumeric>
-              <VStack textAlign="center">
-                {renderActionLinksByRole(item)}
-              </VStack>
-            </Td>
-          </Tr>
-        ));
+        return articles
+          .filter((article) =>
+            statusSelected
+              ? article.editorStatus === statusSelected
+              : article && searchQuery
+              ? new RegExp(searchQuery, "gi").test(article.info?.title) ||
+                new RegExp(searchQuery, "gi").test(article.manuscriptId) ||
+                new RegExp(searchQuery, "gi").test(article.author?.email) ||
+                new RegExp(searchQuery, "gi").test(
+                  article.info?.authors
+                    .map((author) => `${author.firstname} ${author.lastname}`)
+                    .join(";")
+                )
+              : true
+          )
+          .map((item, idx) => (
+            <Tr key={item._id}>
+              <Td>{idx + 1}</Td>
+              <Td>{item.manuscriptId}</Td>
+              <Td>
+                <Box className="two-line-text">{item.info?.title}</Box>
+              </Td>
+              <Td>{timestampToDate(item.submissionDate)}</Td>
+              <Td>{timestampToDate(item.dateDecision)}</Td>
+              <Td textAlign="center">{checkStatus(item.editorStatus)}</Td>
+              <Td isNumeric>
+                <VStack textAlign="center">
+                  {renderActionLinksByRole(item)}
+                </VStack>
+              </Td>
+            </Tr>
+          ));
 
       case ROLES.PUBLISHER:
         return articles
@@ -1028,6 +1086,17 @@ const Reviews = () => {
         setRefresh((pre) => !pre);
       })
       .catch(console.log);
+  };
+
+  const handleEditorDecline = (articleId) => {
+    if (window.confirm("Do you want to decline this?")) {
+      return axiosInstance
+        .get(`/articles/${articleId}/decline/editor`)
+        .then((_) => {
+          setRefresh((pre) => !pre);
+        })
+        .catch(console.log);
+    }
   };
 
   const handleEditorInviteReviewers = (articleId) => {

@@ -12,6 +12,9 @@ exports.EmailTypes = {
   FORGOT_PASSWORD: 1,
   CHANGE_PASSWORD: 2,
   REVIEWER_RESULT: "REVIEWER_RESULT",
+  PUBLISHED: "PUBLISHED",
+  PUBLISHER_ACCEPT: "PUBLISHER_ACCEPT",
+  REJECTED: "REJECTED",
 };
 
 exports.Lists = {
@@ -49,6 +52,7 @@ exports.EditorChiefStatus = {
 exports.EditorStatus = {
   REJECTED: "rejected",
   NEW_INVITATION: "new invitation",
+  DECLINE: "decline invitation",
   INCOMPLETE_ASSIGNMENT: "incomplete assignment",
   COMPLETED: "completed",
 };

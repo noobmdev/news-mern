@@ -1,4 +1,5 @@
 const path = require("path");
+const mongoose = require("mongoose");
 
 const {
   ROLES,
@@ -259,7 +260,12 @@ exports.get = async (req, res) => {
   try {
     const type = req.query.type;
     const query = req.query.q;
+    const issue = req.query.issue;
+
     let filter = type ? { status: type } : {};
+    if (issue) {
+      filter = { ...filter, issue: mongoose.Types.ObjectId(issue) };
+    }
     if (query) {
       filter = {
         ...filter,
@@ -287,14 +293,12 @@ exports.get = async (req, res) => {
         ],
       };
     }
-    console.log("filter", filter);
     const articles = await Article.find({
       ...filter,
       status: ArticleStatus.ACCEPTED,
     })
       .populate("author", ["firstname", "lastname", "email"])
       .sort({ _id: -1 });
-    console.log("articles", articles);
     res.json(articles);
   } catch (error) {
     console.error(error);
@@ -379,6 +383,7 @@ exports.getOwner = async (req, res) => {
           reviewer: req.user._id,
         })
           .populate("article")
+          .populate("article.info")
           .populate("article.researches")
           .sort({ createdAt: -1 });
         break;
@@ -396,7 +401,7 @@ exports.getOwner = async (req, res) => {
       case ROLES.EDITOR:
         articles = await Article.find({
           editor: req.user._id,
-          editorStatus: { $nin: [EditorStatus.COMPLETED] },
+          // editorStatus: { $nin: [EditorStatus.COMPLETED] },
         })
           .populate("author", ["firstname", "lastname", "email"])
           .sort({ createdAt: -1 });
@@ -404,7 +409,8 @@ exports.getOwner = async (req, res) => {
 
       case ROLES.PUBLISHER:
         articles = await Article.find({
-          editorInChiefStatus: EditorChiefStatus.SENT_TO_PUBLISHER,
+          // editorInChiefStatus: EditorChiefStatus.SENT_TO_PUBLISHER,
+          publisher: req.user._id,
         })
           .populate("author", ["firstname", "lastname", "email"])
           .sort({ createdAt: -1 });
@@ -440,6 +446,8 @@ exports.download = async (req, res) => {
   try {
     const { id } = req.params;
     const article = await Article.findById(id);
+
+    console.log(article);
 
     const { filename } = article.file;
     const pathFile = path.join("public", "files", `${filename}`);
@@ -699,7 +707,7 @@ exports.editorAccept = async (req, res) => {
     const article = await Article.findOne({
       _id: articleId,
       editor: req.user._id,
-    });
+    }).populate("author", ["email"]);
 
     if (!article) {
       return res.status(400).send("Invalid article");
@@ -719,6 +727,34 @@ exports.editorAccept = async (req, res) => {
   }
 };
 
+exports.editorDecline = async (req, res) => {
+  try {
+    const { id: articleId } = req.params;
+
+    const article = await Article.findOne({
+      _id: articleId,
+      editor: req.user._id,
+    }).populate("author", ["email"]);
+
+    if (!article) {
+      return res.status(400).send("Invalid article");
+    }
+
+    await Article.findByIdAndUpdate(articleId, {
+      dateDecision: Date.now(),
+      editorStatus: EditorStatus.DECLINE,
+      editor: null,
+    });
+
+    // sendMail(editor.email, type, data)
+
+    res.send("success");
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error);
+  }
+};
+
 exports.publisherAccept = async (req, res) => {
   try {
     const { id: articleId } = req.params;
@@ -726,7 +762,7 @@ exports.publisherAccept = async (req, res) => {
     const article = await Article.findOne({
       _id: articleId,
       publisher: req.user._id,
-    });
+    }).populate("author", ["email"]);
     if (!article) {
       return res.status(400).send("Invalid article");
     }
@@ -737,6 +773,8 @@ exports.publisherAccept = async (req, res) => {
     // });
 
     // sendMail(editor.email, type, data)
+    article.author?.email &&
+      sendMail(article.author.email, EmailTypes.PUBLISHER_ACCEPT);
 
     res.send("success");
   } catch (error) {
@@ -752,21 +790,45 @@ exports.publishArticle = async (req, res) => {
     const article = await Article.findOne({
       _id: articleId,
       publisher: req.user._id,
-    });
+    }).populate("author", ["email", "_id"]);
     if (!article) {
       return res.status(400).send("Invalid article");
     }
 
+    if (
+      !req.body.publicationCode ||
+      !article.file?.filename ||
+      !Object.keys(article.info).length ||
+      !article.author?._id
+    ) {
+      return res.status(400).send("Invalid article");
+    }
+    const _generateManuscriptId = generateManuscriptId(
+      req.body.publicationCode
+    );
+    await buildPdf({
+      filename: article.file.filename,
+      article: {
+        ...article.info,
+        keywords: article.info.keywords?.join("; ") ?? "",
+        manuscriptId: _generateManuscriptId,
+        author: article.info?.authors?.find((a) => a?.id == article.author._id),
+      },
+      update: true,
+    });
+
     await Article.findByIdAndUpdate(articleId, {
       dateDecision: Date.now(),
+      manuscriptId: _generateManuscriptId,
       status: ArticleStatus.ACCEPTED,
       editorInChiefStatus: EditorChiefStatus.PUBLISHED,
-      publisherStatus: PublishStatus.PUBLISHED,
+      // publisherStatus: PublishStatus.PUBLISHED,
       publishedDate: Date.now(),
       ...req.body,
     });
 
-    // sendMail(editor.email, type, data)
+    article.author?.email &&
+      sendMail(article.author.email, EmailTypes.PUBLISHED);
 
     res.send("success");
   } catch (error) {
@@ -779,11 +841,9 @@ exports.reject = async (req, res) => {
   try {
     const { id: articleId } = req.params;
 
-    console.log("articleId", articleId);
-
     const article = await Article.findOne({
       _id: articleId,
-    });
+    }).populate("author", ["email"]);
     if (!article) {
       return res.status(400).send("Invalid article");
     }
@@ -794,7 +854,8 @@ exports.reject = async (req, res) => {
       editorInChiefStatus: EditorChiefStatus.REJECTED_DECISION,
     });
 
-    // sendMail(editor.email, type, data)
+    article.author?.email &&
+      sendMail(article.author.email, EmailTypes.REJECTED);
 
     res.send("success");
   } catch (error) {

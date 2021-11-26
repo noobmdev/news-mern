@@ -26,7 +26,7 @@ export const Layout = ({ children }) => {
 
   const handleSearch = () => {
     if (query.trim()) {
-      history.push(`?q=${query}`);
+      history.push(`/?q=${query}`);
     }
   };
 

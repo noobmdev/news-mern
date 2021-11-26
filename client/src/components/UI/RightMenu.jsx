@@ -24,17 +24,15 @@ const RightMenu = () => {
 
         <Link
           to={{
-            pathname: "https://giaothongso.tk/submission-guidelines/",
+            pathname: "/submission-guidelines/",
           }}
-          target="_blank"
         >
           <Box cursor="pointer">{t("submit_guidelines")}</Box>
         </Link>
         <Link
           to={{
-            pathname: "https://giaothongso.tk/contact-the-journal/",
+            pathname: "/contact-the-journal/",
           }}
-          target="_blank"
         >
           <Box cursor="pointer">{t("contact_the_journal")}</Box>
         </Link>

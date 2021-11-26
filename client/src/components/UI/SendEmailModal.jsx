@@ -21,7 +21,8 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
   const { volumes } = useContext(GlobalContext);
 
   const [publicationCode, setPublicationCode] = useState("");
-  const [pageNumber, setPageNumber] = useState("");
+  const [pageNumberStart, setPageNumberStart] = useState("");
+  const [pageNumberEnd, setPageNumberEnd] = useState("");
   const [selectedVolume, setSelectedVolume] = useState();
   const [selectedIssue, setSelectedIssue] = useState();
 
@@ -93,14 +94,21 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
   };
 
   const handlePublish = () => {
-    if (!publicationCode || !pageNumber || !selectedVolume || !selectedIssue) {
+    if (
+      !publicationCode ||
+      !pageNumberStart ||
+      !pageNumberEnd ||
+      !selectedVolume ||
+      !selectedIssue
+    ) {
       return alert("Fill all required field");
     }
     if (window.confirm("Are you OK?")) {
       axiosInstance
         .post(`/articles/${articleId}/publish`, {
           publicationCode,
-          pageNumber,
+          pageNumberStart,
+          pageNumberEnd,
           volume: selectedVolume,
           issue: selectedIssue,
         })
@@ -136,16 +144,21 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
       case MODAL_TITLES.PUBLISH_ARTICLE:
         return (
           <>
+            <Input
+              placeholder="Mã số xuất bản"
+              value={publicationCode}
+              onChange={(e) => setPublicationCode(e.target.value)}
+            />
             <HStack>
               <Input
-                placeholder="Mã số xuất bản"
-                value={publicationCode}
-                onChange={(e) => setPublicationCode(e.target.value)}
+                placeholder="Page start"
+                value={pageNumberStart}
+                onChange={(e) => setPageNumberStart(e.target.value)}
               />
               <Input
-                placeholder="Page"
-                value={pageNumber}
-                onChange={(e) => setPageNumber(e.target.value)}
+                placeholder="Page end"
+                value={pageNumberEnd}
+                onChange={(e) => setPageNumberEnd(e.target.value)}
               />
             </HStack>
             <HStack>

@@ -40,14 +40,15 @@ export const Home = () => {
   useEffect(() => {
     if (volumes?.length) {
       let latestVolume, latestIssue;
-
-      for (const volume of volumes) {
+      const _volumes = [...volumes.filter((volume) => !!volume.issues?.length)];
+      for (const volume of _volumes) {
         latestVolume = !latestVolume
           ? volume
           : volume.createdAt >= latestVolume.createdAt
           ? volume
           : latestVolume;
       }
+
       for (const issue of latestVolume.issues) {
         latestIssue = !latestIssue
           ? issue
@@ -108,9 +109,8 @@ export const Home = () => {
             <Icon as={BiGroup} w="6" h="6" />
             <Link
               to={{
-                pathname: "https://giaothongso.tk/editorial-board/",
+                pathname: "/editorial-board/",
               }}
-              target="_blank"
             >
               <Box textDecor="underline" cursor="pointer">
                 {t("editorial_board")}
@@ -122,9 +122,8 @@ export const Home = () => {
 
             <Link
               to={{
-                pathname: "https://giaothongso.tk/aims-and-scope/",
+                pathname: "/aims-and-scope/",
               }}
-              target="_blank"
             >
               <Box textDecor="underline" cursor="pointer">
                 {t("aims_and_scope")}
@@ -135,9 +134,8 @@ export const Home = () => {
             <Icon as={RiComputerLine} w="6" h="6" />
             <Link
               to={{
-                pathname: "https://giaothongso.tk/journal-updates/",
+                pathname: "/journal-updates/",
               }}
-              target="_blank"
             >
               <Box textDecor="underline" cursor="pointer">
                 {t("journal_updates")}

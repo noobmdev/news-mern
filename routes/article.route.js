@@ -18,6 +18,7 @@ const {
   publishArticle,
   reject,
   deleteArticle,
+  editorDecline,
 } = require("../controllers/article.controller");
 const { uploadFile } = require("../services/uploadFile");
 
@@ -92,6 +93,10 @@ articleRoute
 articleRoute
   .route("/:id/invite/editor")
   .get(isAuth, hasRole([ROLES.EDITOR]), editorAccept);
+
+articleRoute
+  .route("/:id/decline/editor")
+  .get(isAuth, hasRole([ROLES.EDITOR]), editorDecline);
 
 articleRoute
   .route("/:id/invite/publisher")

@@ -66,7 +66,9 @@ export const ArticleDetail = () => {
             <Box>Volume: {article.volume?.name}.</Box>
             <Box>Issue: {article.issue?.name}.</Box>
             <Box>Publication Code: {article.publicationCode}.</Box>
-            <Box>Page Number: {article.pageNumber}.</Box>
+            <Box>
+              Page Number: {article.pageNumberStart} - {article.pageNumberEnd}.
+            </Box>
           </HStack>
         </VStack>
 
