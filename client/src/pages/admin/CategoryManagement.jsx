@@ -90,6 +90,7 @@ export const CategoryManagement = () => {
   const [name, setName] = useState("");
   const [parent, setParent] = useState("");
   const [desc, setDesc] = useState("");
+  const [fileSelected, setFileSelected] = useState();
 
   useEffect(() => {
     setSelectedItem(undefined);
@@ -228,10 +229,25 @@ export const CategoryManagement = () => {
               </Select>
             </Box>
             {cType !== LISTS.MAJOR_RESEARCH && (
-              <Box>
-                <Box>Mô tả</Box>
-                <Input value={desc} onChange={(e) => setDesc(e.target.value)} />
-              </Box>
+              <>
+                <Box>
+                  <Box>Mô tả</Box>
+                  <Input
+                    value={desc}
+                    onChange={(e) => setDesc(e.target.value)}
+                  />
+                </Box>
+                <Box>
+                  <Box>Hình ảnh</Box>
+                  <label htmlFor="c-file"></label>
+                  <input
+                    id="c-file"
+                    type="file"
+                    style={{ display: "none" }}
+                    onChange={(e) => setFileSelected(e.target.files[0])}
+                  />
+                </Box>
+              </>
             )}
             <HStack justify="center" spacing="4">
               {(selectedItem || name || parent || desc) && (

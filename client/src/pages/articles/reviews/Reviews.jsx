@@ -776,19 +776,19 @@ const Reviews = () => {
     switch (+role) {
       case ROLES.AUTHOR:
         return articles
-          .filter((article) =>
-            statusSelected
-              ? article.status === statusSelected
-              : article && searchQuery
-              ? new RegExp(searchQuery, "gi").test(article.info?.title) ||
-                new RegExp(searchQuery, "gi").test(article.manuscriptId) ||
-                new RegExp(searchQuery, "gi").test(article.author?.email) ||
-                new RegExp(searchQuery, "gi").test(
-                  article.info?.authors
-                    .map((author) => `${author.firstname} ${author.lastname}`)
-                    .join(";")
-                )
-              : true
+          .filter(
+            (article) =>
+              (statusSelected ? article.status === statusSelected : true) &&
+              (searchQuery
+                ? new RegExp(searchQuery, "gi").test(article.info?.title) ||
+                  new RegExp(searchQuery, "gi").test(article.manuscriptId) ||
+                  new RegExp(searchQuery, "gi").test(article.author?.email) ||
+                  new RegExp(searchQuery, "gi").test(
+                    article.info?.authors
+                      .map((author) => `${author.firstname} ${author.lastname}`)
+                      .join(";")
+                  )
+                : true)
           )
           .map((item, idx) => (
             <Tr key={item._id}>
@@ -810,25 +810,25 @@ const Reviews = () => {
 
       case ROLES.REVIEWER:
         return articles
-          .filter((article) =>
-            statusSelected
-              ? article.status === statusSelected
-              : article && searchQuery
-              ? new RegExp(searchQuery, "gi").test(
-                  article.article?.info?.title
-                ) ||
-                new RegExp(searchQuery, "gi").test(
-                  article.article?.manuscriptId
-                ) ||
-                new RegExp(searchQuery, "gi").test(
-                  article.article?.author?.email
-                ) ||
-                new RegExp(searchQuery, "gi").test(
-                  article.info?.authors
-                    .map((author) => `${author.firstname} ${author.lastname}`)
-                    .join(";")
-                )
-              : true
+          .filter(
+            (article) =>
+              (statusSelected ? article.status === statusSelected : true) &&
+              (searchQuery
+                ? new RegExp(searchQuery, "gi").test(
+                    article.article?.info?.title
+                  ) ||
+                  new RegExp(searchQuery, "gi").test(
+                    article.article?.manuscriptId
+                  ) ||
+                  new RegExp(searchQuery, "gi").test(
+                    article.article?.author?.email
+                  ) ||
+                  new RegExp(searchQuery, "gi").test(
+                    article.info?.authors
+                      .map((author) => `${author.firstname} ${author.lastname}`)
+                      .join(";")
+                  )
+                : true)
           )
           .map((item, idx) => (
             <Tr key={item._id}>
@@ -850,19 +850,21 @@ const Reviews = () => {
 
       case ROLES.EDITOR_IN_CHIEF:
         return articles
-          .filter((article) =>
-            statusSelected
-              ? article.editorInChiefStatus === statusSelected
-              : article && searchQuery
-              ? new RegExp(searchQuery, "gi").test(article.info?.title) ||
-                new RegExp(searchQuery, "gi").test(article.manuscriptId) ||
-                new RegExp(searchQuery, "gi").test(article.author?.email) ||
-                new RegExp(searchQuery, "gi").test(
-                  article.info?.authors
-                    .map((author) => `${author.firstname} ${author.lastname}`)
-                    .join(";")
-                )
-              : true
+          .filter(
+            (article) =>
+              (statusSelected
+                ? article.editorInChiefStatus === statusSelected
+                : true) &&
+              (searchQuery
+                ? new RegExp(searchQuery, "gi").test(article.info?.title) ||
+                  new RegExp(searchQuery, "gi").test(article.manuscriptId) ||
+                  new RegExp(searchQuery, "gi").test(article.author?.email) ||
+                  new RegExp(searchQuery, "gi").test(
+                    article.info?.authors
+                      .map((author) => `${author.firstname} ${author.lastname}`)
+                      .join(";")
+                  )
+                : true)
           )
           .map((item, idx) => (
             <Tr key={item._id}>
@@ -886,19 +888,21 @@ const Reviews = () => {
 
       case ROLES.EDITOR:
         return articles
-          .filter((article) =>
-            statusSelected
-              ? article.editorStatus === statusSelected
-              : article && searchQuery
-              ? new RegExp(searchQuery, "gi").test(article.info?.title) ||
-                new RegExp(searchQuery, "gi").test(article.manuscriptId) ||
-                new RegExp(searchQuery, "gi").test(article.author?.email) ||
-                new RegExp(searchQuery, "gi").test(
-                  article.info?.authors
-                    .map((author) => `${author.firstname} ${author.lastname}`)
-                    .join(";")
-                )
-              : true
+          .filter(
+            (article) =>
+              (statusSelected
+                ? article.editorStatus === statusSelected
+                : true) &&
+              (searchQuery
+                ? new RegExp(searchQuery, "gi").test(article.info?.title) ||
+                  new RegExp(searchQuery, "gi").test(article.manuscriptId) ||
+                  new RegExp(searchQuery, "gi").test(article.author?.email) ||
+                  new RegExp(searchQuery, "gi").test(
+                    article.info?.authors
+                      .map((author) => `${author.firstname} ${author.lastname}`)
+                      .join(";")
+                  )
+                : true)
           )
           .map((item, idx) => (
             <Tr key={item._id}>
@@ -920,19 +924,21 @@ const Reviews = () => {
 
       case ROLES.PUBLISHER:
         return articles
-          .filter((article) =>
-            statusSelected
-              ? article.publisherStatus === statusSelected
-              : article && searchQuery
-              ? new RegExp(searchQuery, "gi").test(article.info?.title) ||
-                new RegExp(searchQuery, "gi").test(article.manuscriptId) ||
-                new RegExp(searchQuery, "gi").test(article.author?.email) ||
-                new RegExp(searchQuery, "gi").test(
-                  article.info?.authors
-                    .map((author) => `${author.firstname} ${author.lastname}`)
-                    .join(";")
-                )
-              : true
+          .filter(
+            (article) =>
+              (statusSelected
+                ? article.publisherStatus === statusSelected
+                : true) &&
+              (searchQuery
+                ? new RegExp(searchQuery, "gi").test(article.info?.title) ||
+                  new RegExp(searchQuery, "gi").test(article.manuscriptId) ||
+                  new RegExp(searchQuery, "gi").test(article.author?.email) ||
+                  new RegExp(searchQuery, "gi").test(
+                    article.info?.authors
+                      .map((author) => `${author.firstname} ${author.lastname}`)
+                      .join(";")
+                  )
+                : true)
           )
           .map((item, idx) => (
             <Tr key={item._id}>

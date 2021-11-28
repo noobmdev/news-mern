@@ -103,141 +103,191 @@ export const Home = () => {
           currentPage={pagination.currentPage}
         />
       </Box> */}
-      <VStack align="stretch" spacing="4" flex="1">
-        <HStack spacing="12" color="blue.600">
-          <HStack>
-            <Icon as={BiGroup} w="6" h="6" />
-            <Link
-              to={{
-                pathname: "/editorial-board/",
-              }}
-            >
-              <Box textDecor="underline" cursor="pointer">
-                {t("editorial_board")}
-              </Box>
-            </Link>
-          </HStack>
-          <HStack>
-            <Icon as={BiBook} w="6" h="6" />
-
-            <Link
-              to={{
-                pathname: "/aims-and-scope/",
-              }}
-            >
-              <Box textDecor="underline" cursor="pointer">
-                {t("aims_and_scope")}
-              </Box>
-            </Link>
-          </HStack>
-          <HStack>
-            <Icon as={RiComputerLine} w="6" h="6" />
-            <Link
-              to={{
-                pathname: "/journal-updates/",
-              }}
-            >
-              <Box textDecor="underline" cursor="pointer">
-                {t("journal_updates")}
-              </Box>
-            </Link>
-          </HStack>
-        </HStack>
-
-        <hr />
-
-        <Box>
-          <Collapse startingHeight={70} in={show}>
-            {t(CONSTANTS_DATA.INTRO)}
-          </Collapse>
-          <Button size="sm" onClick={() => setShow((pre) => !pre)}>
-            Show {show ? "Less" : "More"}
-          </Button>
-        </Box>
-
-        <hr />
-
-        <Box>
-          <Box fontSize="lg" fontWeight="semibold">
-            {t("editor_in_chief")}
-          </Box>
-          <Box>{CONSTANTS_DATA.EDITOR_IN_CHIEF}</Box>
-        </Box>
-
-        <Grid templateColumns="repeat(3, 1fr)" gap="4">
-          <Box>
-            <Box fontWeight="semibold">
-              {CONSTANTS_DATA.SUBMISSION_FIRST_DECISION} {t("days")}
-            </Box>
-            <Box>{t("submission_to_first_decision")}</Box>
-          </Box>
-          <Box>
-            <Box fontWeight="semibold">385,364</Box>
-            <Box>{t("downloads")}</Box>
-          </Box>
-          <Box>
-            <Box fontWeight="semibold">
-              {CONSTANTS_DATA.SUBMISSION_ACCEPTANCE} {t("days")}
-            </Box>
-            <Box>{t("submission_to_acceptance")}</Box>
-          </Box>
-        </Grid>
-
-        <VStack
-          align="stretch"
-          border="1px solid"
-          borderColor="gray.200"
-          boxShadow=" 0 0 5px 0 rgb(128 128 128 / 10%)"
-          borderRadius="md"
-          p="4"
-        >
-          <Box fontSize="lg" fontWeight="semibold">
-            {t("latest_issue")}
-          </Box>
-          <hr />
-
-          <HStack align="stretch" spacing="4">
-            <Box minW="28">
-              <Image
-                h="auto"
-                w="100%"
-                // boxSize="250px"
-                objectFit="cover"
-                src="https://media.springernature.com/w92/springer-static/cover/journal/11277/120/1.jpg"
-                alt="Segun Adebayo"
-              />
-            </Box>
-            <VStack align="flex-start" justify="space-between">
-              {latestVolume && (
-                <Box>
-                  <Box>{latestVolume.name}</Box>
-                  <Box>
-                    {latestVolume.issue?.name} - {latestVolume.issue?.desc}
+      {!q ? (
+        <>
+          <VStack align="stretch" spacing="4" flex="1">
+            <HStack spacing="12" color="blue.600">
+              <HStack>
+                <Icon as={BiGroup} w="6" h="6" />
+                <Link
+                  to={{
+                    pathname: "/editorial-board/",
+                  }}
+                >
+                  <Box textDecor="underline" cursor="pointer">
+                    {t("editorial_board")}
                   </Box>
+                </Link>
+              </HStack>
+              <HStack>
+                <Icon as={BiBook} w="6" h="6" />
+
+                <Link
+                  to={{
+                    pathname: "/aims-and-scope/",
+                  }}
+                >
+                  <Box textDecor="underline" cursor="pointer">
+                    {t("aims_and_scope")}
+                  </Box>
+                </Link>
+              </HStack>
+              <HStack>
+                <Icon as={RiComputerLine} w="6" h="6" />
+                <Link
+                  to={{
+                    pathname: "/journal-updates/",
+                  }}
+                >
+                  <Box textDecor="underline" cursor="pointer">
+                    {t("journal_updates")}
+                  </Box>
+                </Link>
+              </HStack>
+            </HStack>
+
+            <hr />
+
+            <Box>
+              <Collapse startingHeight={70} in={show}>
+                {t(CONSTANTS_DATA.INTRO)}
+              </Collapse>
+              <Button size="sm" onClick={() => setShow((pre) => !pre)}>
+                Show {show ? "Less" : "More"}
+              </Button>
+            </Box>
+
+            <hr />
+
+            <Box>
+              <Box fontSize="lg" fontWeight="semibold">
+                {t("editor_in_chief")}
+              </Box>
+              <Box>{CONSTANTS_DATA.EDITOR_IN_CHIEF}</Box>
+            </Box>
+
+            <Grid templateColumns="repeat(3, 1fr)" gap="4">
+              <Box>
+                <Box fontWeight="semibold">
+                  {CONSTANTS_DATA.SUBMISSION_FIRST_DECISION} {t("days")}
                 </Box>
-              )}
+                <Box>{t("submission_to_first_decision")}</Box>
+              </Box>
+              <Box>
+                <Box fontWeight="semibold">385,364</Box>
+                <Box>{t("downloads")}</Box>
+              </Box>
+              <Box>
+                <Box fontWeight="semibold">
+                  {CONSTANTS_DATA.SUBMISSION_ACCEPTANCE} {t("days")}
+                </Box>
+                <Box>{t("submission_to_acceptance")}</Box>
+              </Box>
+            </Grid>
 
-              <Link to="/volumes-and-issues">
-                <Button>{t("view_all_volumes_and_issues")}</Button>
-              </Link>
+            <VStack
+              align="stretch"
+              border="1px solid"
+              borderColor="gray.200"
+              boxShadow=" 0 0 5px 0 rgb(128 128 128 / 10%)"
+              borderRadius="md"
+              p="4"
+            >
+              <Box fontSize="lg" fontWeight="semibold">
+                {t("latest_issue")}
+              </Box>
+              <hr />
+
+              <HStack align="stretch" spacing="4">
+                <Box minW="28">
+                  <Image
+                    h="auto"
+                    w="100%"
+                    // boxSize="250px"
+                    objectFit="cover"
+                    src="https://media.springernature.com/w92/springer-static/cover/journal/11277/120/1.jpg"
+                    alt="Segun Adebayo"
+                  />
+                </Box>
+                <VStack align="flex-start" justify="space-between">
+                  {latestVolume && (
+                    <Link to={`/volumes-and-issues/${latestVolume.issue._id}`}>
+                      <Box>
+                        <Box>{latestVolume.name}</Box>
+                        <Box>
+                          {latestVolume.issue?.name} -{" "}
+                          {latestVolume.issue?.desc}
+                        </Box>
+                      </Box>
+                    </Link>
+                  )}
+
+                  <Link to="/volumes-and-issues">
+                    <Button>{t("view_all_volumes_and_issues")}</Button>
+                  </Link>
+                </VStack>
+              </HStack>
             </VStack>
-          </HStack>
-        </VStack>
 
-        <VStack
-          align="stretch"
-          border="1px solid"
-          borderColor="gray.200"
-          boxShadow=" 0 0 5px 0 rgb(128 128 128 / 10%)"
-          borderRadius="md"
-          p="4"
-        >
-          <Box fontSize="lg" fontWeight="semibold">
-            {t("latest_articles")}
-          </Box>
-          <hr />
+            <VStack
+              align="stretch"
+              border="1px solid"
+              borderColor="gray.200"
+              boxShadow=" 0 0 5px 0 rgb(128 128 128 / 10%)"
+              borderRadius="md"
+              p="4"
+            >
+              <Box fontSize="lg" fontWeight="semibold">
+                {t("latest_articles")}
+              </Box>
+              <hr />
 
-          {articles.slice(0, 10).map((article) => (
+              {articles.slice(0, 10).map((article) => (
+                <Link to={`/articles/${article._id}`} key={article._id}>
+                  <VStack spacing="4" flex="1" align="stretch">
+                    <Box
+                      fontSize="lg"
+                      fontWeight="semibold"
+                      color="blue.600"
+                      cursor="pointer"
+                      _hover={{
+                        textDecor: "underline",
+                      }}
+                      className="two-line-text"
+                    >
+                      {article.info?.title}
+                    </Box>
+                    <Box>
+                      {article.info?.authors
+                        .map(
+                          (author) => `${author.firstname} ${author.lastname}`
+                        )
+                        .join("; ")}
+                    </Box>
+                    <Box color="gray.500">
+                      {t("paper_published")}:{" "}
+                      {timestampToDate(article.publishedDate)}
+                    </Box>
+                  </VStack>
+                  <hr />
+                </Link>
+              ))}
+
+              <HStack>
+                <Box>{t("this_journal_has")}</Box>
+                <Box color="blue.600" cursor="pointer" textDecor="underline">
+                  {articles.length} {t("open_access_articles")}
+                </Box>
+              </HStack>
+              <Box>
+                <Button color="blue.600">{t("view_all_articles")}</Button>
+              </Box>
+            </VStack>
+          </VStack>
+        </>
+      ) : (
+        <VStack align="stretch" flex="1" spacing="8">
+          {articles.map((article) => (
             <Link to={`/articles/${article._id}`} key={article._id}>
               <VStack spacing="4" flex="1" align="stretch">
                 <Box
@@ -265,18 +315,8 @@ export const Home = () => {
               <hr />
             </Link>
           ))}
-
-          <HStack>
-            <Box>{t("this_journal_has")}</Box>
-            <Box color="blue.600" cursor="pointer" textDecor="underline">
-              {articles.length} {t("open_access_articles")}
-            </Box>
-          </HStack>
-          <Box>
-            <Button color="blue.600">{t("view_all_articles")}</Button>
-          </Box>
         </VStack>
-      </VStack>
+      )}
 
       <RightMenu />
     </HStack>

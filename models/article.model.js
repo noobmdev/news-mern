@@ -65,7 +65,10 @@ const articleSchema = mongoose.Schema({
         lastname: {
           type: String,
         },
-        workUnit: {
+        school: {
+          type: String,
+        },
+        faculty: {
           type: String,
         },
         email: {

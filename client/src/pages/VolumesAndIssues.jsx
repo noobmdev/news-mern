@@ -41,18 +41,18 @@ export const VolumesAndIssues = () => {
                   {volume.issues
                     .sort((a, b) => b.createdAt - a.createdAt)
                     .map((issue) => (
-                      <Link to={`/volumes-and-issues/${issue._id}`}>
-                        <Tr>
-                          <Td>
+                      <Tr>
+                        <Td>
+                          <Link to={`/volumes-and-issues/${issue._id}`}>
                             {issue.name}
                             {issue.desc && (
                               <Box color="gray.600" mt="2">
                                 {issue.desc}
                               </Box>
                             )}
-                          </Td>
-                        </Tr>
-                      </Link>
+                          </Link>
+                        </Td>
+                      </Tr>
                     ))}
                 </Tbody>
               </Table>

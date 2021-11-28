@@ -22,7 +22,7 @@ import {
   GridItem,
 } from "@chakra-ui/react";
 import { ROLES } from "keys";
-import React from "react";
+import React, { useMemo } from "react";
 import { useState } from "react";
 
 import { useEffect } from "react";
@@ -103,6 +103,7 @@ const TableItem = ({ user, updateUser, setUserSelected }) => {
 export const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [userSelected, setUserSelected] = useState();
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     axiosInstance
@@ -129,6 +130,16 @@ export const UserManagement = () => {
       })
       .catch((err) => console.log(err));
   };
+
+  const userRender = useMemo(
+    () =>
+      users.filter((user) =>
+        [user.firstname, user.lastname, user.email].some((e) =>
+          new RegExp(searchQuery, "gi").test(e)
+        )
+      ),
+    [users, searchQuery]
+  );
 
   return (
     <Box>
@@ -274,7 +285,11 @@ export const UserManagement = () => {
         User Management
       </Box>
       <Box maxW="80">
-        <Input placeholder="Search" />
+        <Input
+          placeholder="Search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </Box>
       <Table size="sm">
         <Thead>
@@ -293,7 +308,7 @@ export const UserManagement = () => {
           </Tr>
         </Thead>
         <Tbody>
-          {users.map((user, idx) => (
+          {userRender.map((user, idx) => (
             <TableItem
               key={idx}
               user={user}

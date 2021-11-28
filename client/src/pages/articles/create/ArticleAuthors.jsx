@@ -81,84 +81,16 @@ export const Card = ({ id, author, index, moveCard, setArticleInfo }) => {
         align="stretch"
       >
         <Box>Author {index + 1}</Box>
-        <Grid templateColumns="repeat(3, 1fr)" gap="2">
-          <Input
-            className="required-input"
-            size="sm"
-            value={author.firstname}
-            isDisabled={!!author.id}
-            style={{
-              opacity: 1,
-            }}
-            onChange={(e) =>
-              setArticleInfo((pre) => ({
-                ...pre,
-                authors: [
-                  ...pre.authors.slice(0, index),
-                  {
-                    ...pre.authors[index],
-                    firstname: e.target.value,
-                  },
-                  ...pre.authors.slice(index + 1, pre.authors.length),
-                ],
-              }))
-            }
-            bg="gray.100"
-            placeholder="Firstname (*)"
-          />
-          <Input
-            className="required-input"
-            size="sm"
-            value={author.lastname}
-            isDisabled={!!author.id}
-            style={{
-              opacity: 1,
-            }}
-            onChange={(e) =>
-              setArticleInfo((pre) => ({
-                ...pre,
-                authors: [
-                  ...pre.authors.slice(0, index),
-                  {
-                    ...pre.authors[index],
-                    lastname: e.target.value,
-                  },
-                  ...pre.authors.slice(index + 1, pre.authors.length),
-                ],
-              }))
-            }
-            bg="gray.100"
-            placeholder="Lastname (*)"
-          />
-
-          <Input
-            className="required-input"
-            size="sm"
-            value={author.email}
-            isDisabled={!!author.id}
-            style={{
-              opacity: 1,
-            }}
-            onChange={(e) =>
-              setArticleInfo((pre) => ({
-                ...pre,
-                authors: [
-                  ...pre.authors.slice(0, index),
-                  {
-                    ...pre.authors[index],
-                    email: e.target.value,
-                  },
-                  ...pre.authors.slice(index + 1, pre.authors.length),
-                ],
-              }))
-            }
-            bg="gray.100"
-            placeholder="Email (*)"
-          />
-          <GridItem colSpan="3">
+        <Grid templateColumns="repeat(6, 1fr)" gap="2">
+          <GridItem colSpan="2">
             <Input
+              className="required-input"
               size="sm"
-              value={author.workUnit}
+              value={author.firstname}
+              isDisabled={!!author.id}
+              style={{
+                opacity: 1,
+              }}
               onChange={(e) =>
                 setArticleInfo((pre) => ({
                   ...pre,
@@ -166,14 +98,112 @@ export const Card = ({ id, author, index, moveCard, setArticleInfo }) => {
                     ...pre.authors.slice(0, index),
                     {
                       ...pre.authors[index],
-                      workUnit: e.target.value,
+                      firstname: e.target.value,
                     },
                     ...pre.authors.slice(index + 1, pre.authors.length),
                   ],
                 }))
               }
               bg="gray.100"
-              placeholder="Work Uint"
+              placeholder="Firstname (*)"
+            />
+          </GridItem>
+
+          <GridItem colSpan="2">
+            {" "}
+            <Input
+              className="required-input"
+              size="sm"
+              value={author.lastname}
+              isDisabled={!!author.id}
+              style={{
+                opacity: 1,
+              }}
+              onChange={(e) =>
+                setArticleInfo((pre) => ({
+                  ...pre,
+                  authors: [
+                    ...pre.authors.slice(0, index),
+                    {
+                      ...pre.authors[index],
+                      lastname: e.target.value,
+                    },
+                    ...pre.authors.slice(index + 1, pre.authors.length),
+                  ],
+                }))
+              }
+              bg="gray.100"
+              placeholder="Lastname (*)"
+            />
+          </GridItem>
+
+          <GridItem colSpan="2">
+            <Input
+              className="required-input"
+              size="sm"
+              value={author.email}
+              isDisabled={!!author.id}
+              style={{
+                opacity: 1,
+              }}
+              onChange={(e) =>
+                setArticleInfo((pre) => ({
+                  ...pre,
+                  authors: [
+                    ...pre.authors.slice(0, index),
+                    {
+                      ...pre.authors[index],
+                      email: e.target.value,
+                    },
+                    ...pre.authors.slice(index + 1, pre.authors.length),
+                  ],
+                }))
+              }
+              bg="gray.100"
+              placeholder="Email (*)"
+            />
+          </GridItem>
+          <GridItem colSpan="3">
+            <Input
+              size="sm"
+              value={author.school}
+              onChange={(e) =>
+                setArticleInfo((pre) => ({
+                  ...pre,
+                  authors: [
+                    ...pre.authors.slice(0, index),
+                    {
+                      ...pre.authors[index],
+                      school: e.target.value,
+                    },
+                    ...pre.authors.slice(index + 1, pre.authors.length),
+                  ],
+                }))
+              }
+              bg="gray.100"
+              placeholder="School"
+            />
+          </GridItem>
+
+          <GridItem colSpan="3">
+            <Input
+              size="sm"
+              value={author.faculty}
+              onChange={(e) =>
+                setArticleInfo((pre) => ({
+                  ...pre,
+                  authors: [
+                    ...pre.authors.slice(0, index),
+                    {
+                      ...pre.authors[index],
+                      faculty: e.target.value,
+                    },
+                    ...pre.authors.slice(index + 1, pre.authors.length),
+                  ],
+                }))
+              }
+              bg="gray.100"
+              placeholder="Faculty"
             />
           </GridItem>
           {!author.id && (

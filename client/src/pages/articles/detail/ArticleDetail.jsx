@@ -4,12 +4,23 @@ import { useParams } from "react-router";
 import { axiosInstance } from "utils/axios";
 import { HiOutlineMail } from "react-icons/hi";
 import { timestampToDate } from "utils/time";
+import { Link } from "react-router-dom";
+import { useTranslate } from "hooks/useTranslate";
 
 export const ArticleDetail = () => {
+  const { t } = useTranslate();
   const [article, setArticle] = useState();
   const { id } = useParams();
-  console.log("article", article);
+  const [articles, setArticles] = useState([]);
+
   useEffect(() => {
+    const getLatest10 = async () => {
+      axiosInstance
+        .get("/articles/latest")
+        .then((res) => setArticles(res.data))
+        .catch(console.error);
+    };
+
     if (id) {
       axiosInstance
         .get(`/articles/${id}`)
@@ -17,6 +28,8 @@ export const ArticleDetail = () => {
           setArticle(res.data);
         })
         .catch((err) => console.log(err));
+
+      getLatest10();
     }
   }, [id]);
 
@@ -171,6 +184,37 @@ export const ArticleDetail = () => {
             Download
           </Button>
         </Box>
+        <hr />
+        <VStack align="stretch" flex="1" spacing="8">
+          {articles.map((article) => (
+            <Link to={`/articles/${article._id}`} key={article._id}>
+              <VStack spacing="4" flex="1" align="stretch">
+                <Box
+                  fontSize="lg"
+                  fontWeight="semibold"
+                  color="blue.600"
+                  cursor="pointer"
+                  _hover={{
+                    textDecor: "underline",
+                  }}
+                  className="two-line-text"
+                >
+                  {article.info?.title}
+                </Box>
+                <Box>
+                  {article.info?.authors
+                    .map((author) => `${author.firstname} ${author.lastname}`)
+                    .join("; ")}
+                </Box>
+                <Box color="gray.500">
+                  {t("paper_published")}:{" "}
+                  {timestampToDate(article.publishedDate)}
+                </Box>
+              </VStack>
+              <hr />
+            </Link>
+          ))}
+        </VStack>
       </VStack>
     </HStack>
   ) : (

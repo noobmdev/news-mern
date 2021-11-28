@@ -306,6 +306,21 @@ exports.get = async (req, res) => {
   }
 };
 
+exports.getLatest10 = async (req, res) => {
+  try {
+    const articles = await Article.find({
+      status: ArticleStatus.ACCEPTED,
+    })
+      .populate("author", ["firstname", "lastname", "email"])
+      .sort({ _id: -1 })
+      .limit(10);
+    res.json(articles);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error);
+  }
+};
+
 exports.deleteArticle = async (req, res) => {
   try {
     const { id } = req.params;
@@ -822,7 +837,7 @@ exports.publishArticle = async (req, res) => {
       manuscriptId: _generateManuscriptId,
       status: ArticleStatus.ACCEPTED,
       editorInChiefStatus: EditorChiefStatus.PUBLISHED,
-      // publisherStatus: PublishStatus.PUBLISHED,
+      publisherStatus: PublishStatus.PUBLISHED,
       publishedDate: Date.now(),
       ...req.body,
     });

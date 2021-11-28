@@ -57,8 +57,9 @@
           <td class="col-2">
             <% article.authors.forEach(function(author) { %>
             <div>
-              Name: <%= author.firstname %> <%= author.lastname %>. Work Unit:
-              <%= author.workUnit %>. Email: <%= author.email %>.
+              Name: <%= author.firstname %> <%= author.lastname %>. Email: <%=
+              author.email %>. School: <%= author?.school %>. Faculty: <%=
+              author?.faculty %>.
             </div>
             <% }); %>
           </td>
@@ -70,7 +71,8 @@
             <div>
               Name: <%= article.author?.firstname %> <%=
               article.author?.lastname %>. Email: <%= article.author?.email %>.
-              Work Unit: <%= article.author?.workUnit ?? "N/A" %>.
+              School: <%= article.author?.school %>. Faculty: <%=
+              article.author?.faculty %>.
             </div>
           </td>
         </tr>

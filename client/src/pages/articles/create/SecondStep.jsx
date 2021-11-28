@@ -107,7 +107,8 @@ export const SecondStep = ({ articleInfo, setArticleInfo }) => {
                   {
                     firstname: "",
                     lastname: "",
-                    workUnit: "",
+                    school: "",
+                    faculty: "",
                     email: "",
                   },
                 ],

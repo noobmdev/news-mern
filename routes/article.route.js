@@ -19,6 +19,7 @@ const {
   reject,
   deleteArticle,
   editorDecline,
+  getLatest10,
 } = require("../controllers/article.controller");
 const { uploadFile } = require("../services/uploadFile");
 
@@ -59,6 +60,8 @@ articleRoute.route("/save").post(
   ]),
   saveTmp
 );
+
+articleRoute.route("/latest").get(getLatest10);
 
 articleRoute.route("/roles/:role").get(isAuth, getOwner);
 
