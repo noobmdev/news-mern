@@ -274,6 +274,14 @@ exports.get = async (req, res) => {
             "info.title": { $regex: new RegExp(query, "gi") },
           },
           {
+            "info.summary": { $regex: new RegExp(query, "gi") },
+          },
+          {
+            "info.keywords": {
+              $elemMatch: { $regex: new RegExp(query, "gi") },
+            },
+          },
+          {
             "info.authors": {
               $elemMatch: {
                 $or: [

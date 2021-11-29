@@ -3,16 +3,18 @@ const { MajorResearch, VolumeIssue } = require("../models");
 
 exports.create = async (req, res) => {
   try {
-    const { type, data } = req.body;
+    const { type, ...data } = req.body;
+    if (!req.file) {
+      return res.status(400).send("Image is required");
+    }
     let result;
-
     switch (parseInt(type)) {
       case Lists.MAJOR_RESEARCH:
         result = new MajorResearch(data);
         break;
 
       case Lists.VOLUME_ISSUE:
-        result = new VolumeIssue(data);
+        result = new VolumeIssue({ ...data, filename: req.file.filename });
         break;
 
       default:
@@ -25,6 +27,7 @@ exports.create = async (req, res) => {
     await result.save();
     res.json(result);
   } catch (error) {
+    console.log(error);
     return res.status(500).json(error);
   }
 };
@@ -58,7 +61,11 @@ exports.remove = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const { type, id, data } = req.body;
+    console.log(req.body, req.file);
+    let { type, id, ...data } = req.body;
+    if (req.file) {
+      data = { ...data, filename: req.file.filename };
+    }
 
     switch (parseInt(type)) {
       case Lists.MAJOR_RESEARCH:

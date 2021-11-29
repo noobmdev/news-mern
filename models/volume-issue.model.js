@@ -13,6 +13,9 @@ const volumeIssueSchema = mongoose.Schema({
   desc: {
     type: String,
   },
+  filename: {
+    type: String,
+  },
   isDeleted: {
     type: Boolean,
     default: false,

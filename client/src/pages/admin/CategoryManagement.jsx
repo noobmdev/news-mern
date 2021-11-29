@@ -102,9 +102,13 @@ export const CategoryManagement = () => {
 
   useEffect(() => {
     if (selectedItem) {
+      console.log(selectedItem);
       setName(selectedItem.name);
       setParent(selectedItem.parent ?? "");
       setDesc(selectedItem.desc ?? "");
+      selectedItem.filename
+        ? setFileSelected({ name: selectedItem.filename })
+        : setFileSelected(undefined);
     } else {
       setName("");
       setParent("");
@@ -112,37 +116,44 @@ export const CategoryManagement = () => {
     }
   }, [selectedItem]);
 
+  console.log(fileSelected);
+
   const handleSaveList = () => {
     if (name) {
-      let data = { name };
-      if (parent) data = { ...data, parent };
-      if (desc) data = { ...data, desc };
+      const formData = new FormData();
+      formData.append("type", cType);
+      formData.append("name", name);
+      if (parent) {
+        formData.append("parent", parent);
+      }
+      if (desc) {
+        formData.append("desc", desc);
+      }
+      if (fileSelected) {
+        formData.append("file", fileSelected);
+      }
 
       if (selectedItem) {
         // update
+        formData.append("id", selectedItem._id);
         axiosInstance
-          .put(`/list`, {
-            type: cType,
-            data,
-            id: selectedItem._id,
-          })
+          .put(`/list`, formData)
           .then((res) => {
             setRefresh((pre) => !pre);
             setSelectedItem(undefined);
+            setFileSelected(undefined);
           })
           .catch((err) => console.log(err));
       } else {
         // create new once
         axiosInstance
-          .post(`/list`, {
-            type: cType,
-            data,
-          })
+          .post(`/list`, formData)
           .then((res) => {
             setRefresh((pre) => !pre);
             setName("");
             setParent("");
             setDesc("");
+            setFileSelected(undefined);
           })
           .catch((err) => console.log(err));
       }
@@ -167,7 +178,11 @@ export const CategoryManagement = () => {
   const isDataChange = () => {
     let flag = false;
     if (selectedItem) {
-      if (name !== selectedItem.name || desc !== selectedItem.desc) {
+      if (
+        name !== selectedItem.name ||
+        desc !== selectedItem.desc ||
+        fileSelected?.name !== selectedItem.filename
+      ) {
         flag = true;
       }
     } else {
@@ -237,16 +252,32 @@ export const CategoryManagement = () => {
                     onChange={(e) => setDesc(e.target.value)}
                   />
                 </Box>
-                <Box>
-                  <Box>Hình ảnh</Box>
-                  <label htmlFor="c-file"></label>
+                <HStack>
+                  <label
+                    htmlFor="c-file"
+                    style={{
+                      border: "1px solid",
+                      padding: "6px",
+                      background: "#d7d7d7d",
+                    }}
+                  >
+                    Choose file
+                  </label>
+
+                  <Box>
+                    {fileSelected ? fileSelected.name : "No file chosen"}
+                  </Box>
                   <input
                     id="c-file"
                     type="file"
                     style={{ display: "none" }}
-                    onChange={(e) => setFileSelected(e.target.files[0])}
+                    accept="image/*"
+                    onChange={(e) => {
+                      console.log(e.target.files[0]);
+                      setFileSelected(e.target.files[0]);
+                    }}
                   />
-                </Box>
+                </HStack>
               </>
             )}
             <HStack justify="center" spacing="4">

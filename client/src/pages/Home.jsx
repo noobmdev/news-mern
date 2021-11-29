@@ -22,6 +22,7 @@ import { timestampToDate } from "utils/time";
 import { CONSTANTS_DATA } from "keys";
 import { useLocation } from "react-router";
 import queryString from "query-string";
+import imagePath from "utils/imagePath";
 
 export const Home = () => {
   const { volumes } = useContext(GlobalContext);
@@ -199,14 +200,18 @@ export const Home = () => {
               <hr />
 
               <HStack align="stretch" spacing="4">
-                <Box minW="28">
+                <Box boxSize="36">
                   <Image
                     h="auto"
                     w="100%"
                     // boxSize="250px"
                     objectFit="cover"
-                    src="https://media.springernature.com/w92/springer-static/cover/journal/11277/120/1.jpg"
-                    alt="Segun Adebayo"
+                    src={
+                      latestVolume
+                        ? imagePath(latestVolume.filename)
+                        : "https://media.springernature.com/w92/springer-static/cover/journal/11277/120/1.jpg"
+                    }
+                    alt="image"
                   />
                 </Box>
                 <VStack align="flex-start" justify="space-between">
