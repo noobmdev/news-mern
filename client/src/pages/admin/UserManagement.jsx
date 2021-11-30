@@ -20,12 +20,12 @@ import {
   FormLabel,
   Grid,
   GridItem,
+  Spinner,
 } from "@chakra-ui/react";
 import { ROLES } from "keys";
-import React, { useMemo } from "react";
-import { useState } from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
+import debounce from "lodash/debounce";
 
-import { useEffect } from "react";
 import { axiosInstance } from "utils/axios";
 
 const TableItem = ({ user, updateUser, setUserSelected }) => {
@@ -104,15 +104,24 @@ export const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [userSelected, setUserSelected] = useState();
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axiosInstance
-      .get(`/auth/users/`)
+      .get(`/auth/users/`, {
+        params: {
+          q: searchQuery,
+        },
+      })
       .then((res) => {
         setUsers(res.data);
+        setLoading(false);
       })
-      .catch((err) => console.log(err));
-  }, []);
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  }, [searchQuery]);
 
   const updateUser = (user) => {
     axiosInstance
@@ -131,15 +140,12 @@ export const UserManagement = () => {
       .catch((err) => console.log(err));
   };
 
-  const userRender = useMemo(
-    () =>
-      users.filter((user) =>
-        [user.firstname, user.lastname, user.email].some((e) =>
-          new RegExp(searchQuery, "gi").test(e)
-        )
-      ),
-    [users, searchQuery]
-  );
+  const debounceFn = useCallback(debounce(setSearchQuery, 1000), []);
+
+  function handleChange(e) {
+    setLoading(true);
+    debounceFn(e.target.value);
+  }
 
   return (
     <Box>
@@ -287,37 +293,43 @@ export const UserManagement = () => {
       <Box maxW="80">
         <Input
           placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          // value={searchQuery}
+          onChange={(e) => handleChange(e)}
         />
       </Box>
-      <Table size="sm">
-        <Thead>
-          <Tr>
-            <Th>Email</Th>
-            <Th>First Name</Th>
-            <Th>Last Name</Th>
+      {!loading ? (
+        <Table size="sm">
+          <Thead>
+            <Tr>
+              <Th>Email</Th>
+              <Th>First Name</Th>
+              <Th>Last Name</Th>
 
-            <Th textAlign="center">Is Admin</Th>
-            <Th textAlign="center">Is Editor-in-Chief</Th>
-            <Th textAlign="center">Is Author</Th>
-            <Th textAlign="center">Is Editor</Th>
-            <Th textAlign="center">Is Reviewer</Th>
-            <Th textAlign="center">Is Publisher</Th>
-            <Th isNumeric>Actions</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {userRender.map((user, idx) => (
-            <TableItem
-              key={idx}
-              user={user}
-              updateUser={updateUser}
-              setUserSelected={setUserSelected}
-            />
-          ))}
-        </Tbody>
-      </Table>
+              <Th textAlign="center">Is Admin</Th>
+              <Th textAlign="center">Is Editor-in-Chief</Th>
+              <Th textAlign="center">Is Author</Th>
+              <Th textAlign="center">Is Editor</Th>
+              <Th textAlign="center">Is Reviewer</Th>
+              <Th textAlign="center">Is Publisher</Th>
+              <Th isNumeric>Actions</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {users.map((user, idx) => (
+              <TableItem
+                key={idx}
+                user={user}
+                updateUser={updateUser}
+                setUserSelected={setUserSelected}
+              />
+            ))}
+          </Tbody>
+        </Table>
+      ) : (
+        <Box textAlign="center">
+          <Spinner />
+        </Box>
+      )}
     </Box>
   );
 };

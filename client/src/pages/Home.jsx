@@ -202,13 +202,12 @@ export const Home = () => {
               <HStack align="stretch" spacing="4">
                 <Box boxSize="36">
                   <Image
-                    h="auto"
-                    w="100%"
-                    // boxSize="250px"
                     objectFit="cover"
                     src={
                       latestVolume
-                        ? imagePath(latestVolume.filename)
+                        ? latestVolume.issue?.filename
+                          ? imagePath(latestVolume.issue?.filename)
+                          : "https://media.springernature.com/w92/springer-static/cover/journal/11277/120/1.jpg"
                         : "https://media.springernature.com/w92/springer-static/cover/journal/11277/120/1.jpg"
                     }
                     alt="image"

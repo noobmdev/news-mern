@@ -252,32 +252,34 @@ export const CategoryManagement = () => {
                     onChange={(e) => setDesc(e.target.value)}
                   />
                 </Box>
-                <HStack>
-                  <label
-                    htmlFor="c-file"
-                    style={{
-                      border: "1px solid",
-                      padding: "6px",
-                      background: "#d7d7d7d",
-                    }}
-                  >
-                    Choose file
-                  </label>
+                {parent && (
+                  <HStack>
+                    <label
+                      htmlFor="c-file"
+                      style={{
+                        border: "1px solid",
+                        padding: "6px",
+                        background: "#d7d7d7d",
+                      }}
+                    >
+                      Choose file
+                    </label>
 
-                  <Box>
-                    {fileSelected ? fileSelected.name : "No file chosen"}
-                  </Box>
-                  <input
-                    id="c-file"
-                    type="file"
-                    style={{ display: "none" }}
-                    accept="image/*"
-                    onChange={(e) => {
-                      console.log(e.target.files[0]);
-                      setFileSelected(e.target.files[0]);
-                    }}
-                  />
-                </HStack>
+                    <Box>
+                      {fileSelected ? fileSelected.name : "No file chosen"}
+                    </Box>
+                    <input
+                      id="c-file"
+                      type="file"
+                      style={{ display: "none" }}
+                      accept="image/*"
+                      onChange={(e) => {
+                        console.log(e.target.files[0]);
+                        setFileSelected(e.target.files[0]);
+                      }}
+                    />
+                  </HStack>
+                )}
               </>
             )}
             <HStack justify="center" spacing="4">

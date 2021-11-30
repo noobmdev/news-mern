@@ -79,7 +79,28 @@ exports.postLogin = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
   try {
-    const users = await User.find({ _id: { $nin: [req.user._id] } })
+    console.log(req.query);
+    const q = req.query.q;
+
+    let filter = { _id: { $nin: [req.user._id] } };
+    if (q) {
+      filter = {
+        $and: [
+          { _id: { $nin: [req.user._id] } },
+          {
+            $or: [
+              {
+                email: { $regex: new RegExp(q, "gi") },
+                firstname: { $regex: new RegExp(q, "gi") },
+                lastname: { $regex: new RegExp(q, "gi") },
+              },
+            ],
+          },
+        ],
+      };
+    }
+
+    const users = await User.find(filter)
       .populate("major", ["name"])
       .populate("research", ["name"])
       .lean();
