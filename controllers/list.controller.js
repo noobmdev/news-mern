@@ -1,12 +1,10 @@
 const { Lists } = require("../constants");
-const { MajorResearch, VolumeIssue } = require("../models");
+const { MajorResearch, VolumeIssue, Article } = require("../models");
 
 exports.create = async (req, res) => {
   try {
     const { type, ...data } = req.body;
-    if (!req.file) {
-      return res.status(400).send("Image is required");
-    }
+
     let result;
     switch (parseInt(type)) {
       case Lists.MAJOR_RESEARCH:
@@ -14,7 +12,15 @@ exports.create = async (req, res) => {
         break;
 
       case Lists.VOLUME_ISSUE:
-        result = new VolumeIssue({ ...data, filename: req.file.filename });
+        let payload = { ...data };
+        if (data.parent) {
+          if (!req.file) {
+            return res.status(400).send("Image is required");
+          } else {
+            payload = { ...payload, filename: req.file.filename };
+          }
+        }
+        result = new VolumeIssue(payload);
         break;
 
       default:
@@ -34,9 +40,9 @@ exports.create = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    const { type, id } = req.body;
-
-    switch (parseInt(type)) {
+    const { type, id } = req.query;
+    console.log(type, id);
+    switch (+type) {
       case Lists.MAJOR_RESEARCH:
         await MajorResearch.findByIdAndUpdate(id, {
           isDeleted: true,
@@ -126,7 +132,7 @@ exports.get = async (req, res) => {
         break;
 
       default:
-        const [majors, volumes] = await Promise.all([
+        const [majors, volumes, totalDownload] = await Promise.all([
           MajorResearch.aggregate([
             { $match: { parent: { $exists: false }, isDeleted: false } },
             {
@@ -149,8 +155,16 @@ exports.get = async (req, res) => {
               },
             },
           ]),
+          Article.aggregate([
+            {
+              $group: {
+                _id: null,
+                total: { $sum: "$totalDownload" }, // for your case use local.user_totaldocs
+              },
+            },
+          ]),
         ]);
-        result = { majors, volumes };
+        result = { majors, volumes, totalDownload };
         break;
     }
     if (!result) return res.json([]);

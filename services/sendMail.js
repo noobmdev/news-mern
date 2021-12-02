@@ -61,6 +61,8 @@ exports.sendMail = async (to, type, data = undefined) => {
         break;
 
       default:
+        (subject = data?.subject ?? "Example subject"),
+          (htmlBody = data?.content ?? "Example content");
         break;
     }
 

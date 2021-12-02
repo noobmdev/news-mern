@@ -470,8 +470,9 @@ exports.download = async (req, res) => {
     const { id } = req.params;
     const article = await Article.findById(id);
 
-    console.log(article);
-
+    await Article.findByIdAndUpdate(id, {
+      $inc: { totalDownload: 1 },
+    });
     const { filename } = article.file;
     const pathFile = path.join("public", "files", `${filename}`);
 
@@ -617,6 +618,9 @@ exports.inviteReview = async (req, res) => {
     if (!to) {
       return res.status(400).send("Email receipts is required");
     }
+    const { cc, ..._data } = data;
+    const _cc = cc.split(";").filter((e) => !!e) ?? [];
+    _cc.map((to) => sendMail(to, null, _data));
 
     const article = await Article.findById(articleId).populate("author", [
       "email",
@@ -715,7 +719,6 @@ exports.inviteReview = async (req, res) => {
       default:
         break;
     }
-
     res.send("success");
   } catch (error) {
     console.error(error);

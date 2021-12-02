@@ -549,7 +549,12 @@ const Reviews = () => {
                 >
                   View pdf
                 </Button>
-                <Button size="xs" mt="1" colorScheme="green">
+                <Button
+                  size="xs"
+                  mt="1"
+                  colorScheme="green"
+                  onClick={() => handleOpenModal(item._id)}
+                >
                   Invite editor
                 </Button>
               </>
@@ -631,6 +636,18 @@ const Reviews = () => {
             );
 
           case EDITOR_IN_CHIEF_STATUSES.SENT_TO_PUBLISHER:
+            return (
+              <Button
+                onClick={() => hanldeDownload(item)}
+                size="xs"
+                mt="1"
+                colorScheme="blue"
+              >
+                View PDF
+              </Button>
+            );
+
+          case EDITOR_IN_CHIEF_STATUSES.PUBLISHED:
             return (
               <Button
                 onClick={() => hanldeDownload(item)}

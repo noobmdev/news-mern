@@ -141,6 +141,10 @@ const articleSchema = mongoose.Schema({
     type: Number,
     default: Date.now(),
   },
+  totalDownload: {
+    type: Number,
+    default: 0,
+  },
 });
 
 exports.Article = mongoose.model("articles", articleSchema);

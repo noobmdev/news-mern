@@ -25,7 +25,7 @@ import queryString from "query-string";
 import imagePath from "utils/imagePath";
 
 export const Home = () => {
-  const { volumes } = useContext(GlobalContext);
+  const { volumes, totalDownload } = useContext(GlobalContext);
 
   const [latestVolume, setLatestVolume] = useState();
 
@@ -67,7 +67,6 @@ export const Home = () => {
   }, [volumes]);
 
   const location = useLocation();
-  console.log(location);
 
   const { q } = queryString.parse(location.search);
 
@@ -175,7 +174,7 @@ export const Home = () => {
                 <Box>{t("submission_to_first_decision")}</Box>
               </Box>
               <Box>
-                <Box fontWeight="semibold">385,364</Box>
+                <Box fontWeight="semibold">{totalDownload?.total}</Box>
                 <Box>{t("downloads")}</Box>
               </Box>
               <Box>

@@ -62,7 +62,17 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
     const reEmail =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!reEmail.test(String(to).toLowerCase())) {
-      return alert("Email is invalid");
+      return alert("To is invalid email");
+    }
+    if (
+      cc
+        .split(";")
+        .filter((e) => !!e)
+        .some((e) => !reEmail.test(e.trim()))
+    ) {
+      return alert(
+        "CC is invalid list email. Example email1@email.com;email2@email.com"
+      );
     }
 
     if (!subject.trim() || !content) {
@@ -84,6 +94,7 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
           setRefresh && setRefresh((pre) => !pre);
           resetState();
           alert("Send mail success");
+          onClose();
         })
         .catch((err) => {
           if (typeof err.response?.data === "string") {
@@ -116,6 +127,7 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
           setRefresh && setRefresh((pre) => !pre);
           resetState();
           alert("Publish success");
+          onClose();
         })
         .catch((err) => {
           if (typeof err.response?.data === "string") {
@@ -130,12 +142,10 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
       case MODAL_TITLES.PUBLISH_ARTICLE:
         handlePublish();
         break;
-
       default:
         handleSendInvite();
         break;
     }
-    onClose();
   }
 
   const renderBody = () => {
@@ -177,7 +187,10 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
               </Box>
               <Box flex="1">
                 <Box>Issue</Box>
-                <Select value={selectedIssue}>
+                <Select
+                  value={selectedIssue}
+                  onChange={(e) => setSelectedIssue(e.target.value)}
+                >
                   {selectedVolume?.issues.map((i) => (
                     <option key={i._id} value={i._id}>
                       {i.name}
@@ -229,12 +242,7 @@ function SendEmailModal({ articleId, title, isOpen, onClose, setRefresh }) {
         </ModalBody>
 
         <ModalFooter>
-          <Button
-            colorScheme="blue"
-            mr={3}
-            onClick={onClose}
-            onClick={handleSend}
-          >
+          <Button colorScheme="blue" mr={3} onClick={handleSend}>
             Send
           </Button>
         </ModalFooter>

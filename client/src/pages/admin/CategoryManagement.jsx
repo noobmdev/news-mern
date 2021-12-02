@@ -102,7 +102,6 @@ export const CategoryManagement = () => {
 
   useEffect(() => {
     if (selectedItem) {
-      console.log(selectedItem);
       setName(selectedItem.name);
       setParent(selectedItem.parent ?? "");
       setDesc(selectedItem.desc ?? "");
@@ -115,8 +114,6 @@ export const CategoryManagement = () => {
       setDesc("");
     }
   }, [selectedItem]);
-
-  console.log(fileSelected);
 
   const handleSaveList = () => {
     if (name) {
@@ -161,11 +158,14 @@ export const CategoryManagement = () => {
   };
 
   const handleDelete = () => {
+    console.log(cType, selectedItem._id);
     if (selectedItem) {
       axiosInstance
         .delete(`/list`, {
-          type: cType,
-          id: selectedItem._id,
+          params: {
+            type: cType,
+            id: selectedItem._id,
+          },
         })
         .then((res) => {
           setRefresh((pre) => !pre);

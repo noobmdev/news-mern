@@ -13,6 +13,7 @@ const initState = {
   language: "en",
   majors: [],
   volumes: [],
+  totalDownload: 0,
 };
 
 // create context
@@ -65,6 +66,7 @@ export const GlobalProvider = ({ children }) => {
         majors: state.majors,
         volumes: state.volumes,
         loading: state.loading,
+        totalDownload: state.totalDownload,
         setLanguage,
         setCurrentUser,
         logout,

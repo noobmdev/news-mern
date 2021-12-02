@@ -82,6 +82,7 @@ export const ArticleDetail = () => {
             <Box>
               Page Number: {article.pageNumberStart} - {article.pageNumberEnd}.
             </Box>
+            <Box>Total download: {article.totalDownload}</Box>
           </HStack>
         </VStack>
 

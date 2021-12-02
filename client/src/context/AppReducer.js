@@ -28,6 +28,7 @@ export const AppReducer = (state, action) => {
         ...state,
         majors: payload?.majors ?? [],
         volumes: payload?.volumes ?? [],
+        totalDownload: payload?.totalDownload[0],
       };
 
     default:
