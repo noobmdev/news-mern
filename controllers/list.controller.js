@@ -138,19 +138,47 @@ exports.get = async (req, res) => {
             {
               $lookup: {
                 from: "majors_researches",
-                localField: "_id",
-                foreignField: "parent",
+                let: {
+                  majorId: "$_id",
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $and: [
+                          { $eq: ["$parent", "$$majorId"] },
+                          { $eq: ["$isDeleted", false] },
+                        ],
+                      },
+                    },
+                  },
+                ],
                 as: "researches",
               },
             },
+            // { $unwind: "$researches" },
+            // { $match: { "researches.isDeleted": false } },
           ]),
           VolumeIssue.aggregate([
             { $match: { parent: { $exists: false }, isDeleted: false } },
             {
               $lookup: {
                 from: "volumes_issues",
-                localField: "_id",
-                foreignField: "parent",
+                let: {
+                  volumeId: "$_id",
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $and: [
+                          { $eq: ["$parent", "$$volumeId"] },
+                          { $eq: ["$isDeleted", false] },
+                        ],
+                      },
+                    },
+                  },
+                ],
                 as: "issues",
               },
             },

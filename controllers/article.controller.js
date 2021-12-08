@@ -815,7 +815,6 @@ exports.publishArticle = async (req, res) => {
 
     const article = await Article.findOne({
       _id: articleId,
-      publisher: req.user._id,
     }).populate("author", ["email", "_id"]);
     if (!article) {
       return res.status(400).send("Invalid article");
@@ -825,36 +824,47 @@ exports.publishArticle = async (req, res) => {
       !req.body.publicationCode ||
       !article.file?.filename ||
       !Object.keys(article.info).length ||
-      !article.author?._id
+      !article.author?._id ||
+      !req.body.pageNumberStart ||
+      !req.body.pageNumberEnd
     ) {
-      return res.status(400).send("Invalid article");
+      return res.status(400).send("Invalid article info");
     }
+    console.log(req.body);
     const _generateManuscriptId = generateManuscriptId(
       req.body.publicationCode
     );
-    await buildPdf({
-      filename: article.file.filename,
-      article: {
-        ...article.info,
-        keywords: article.info.keywords?.join("; ") ?? "",
+    // await buildPdf({
+    //   filename: article.file.filename,
+    //   article: {
+    //     ...article.info,
+    //     keywords: article.info.keywords?.join("; ") ?? "",
+    //     manuscriptId: _generateManuscriptId,
+    //     author: article.info?.authors?.find((a) => a?.id == article.author._id),
+    //   },
+    //   update: true,
+    // });
+
+    await Article.findByIdAndUpdate(
+      articleId,
+      {
+        dateDecision: Date.now(),
         manuscriptId: _generateManuscriptId,
-        author: article.info?.authors?.find((a) => a?.id == article.author._id),
+        status: ArticleStatus.ACCEPTED,
+        editorInChiefStatus: EditorChiefStatus.PUBLISHED,
+        // publisherStatus: PublishStatus.PUBLISHED,
+        publishedDate: Date.now(),
+        pageNumberStart: req.body.pageNumberStart,
+        pageNumberEnd: req.body.pageNumberEnd,
       },
-      update: true,
-    });
+      {
+        new: true,
+        uppsert: true,
+      }
+    );
 
-    await Article.findByIdAndUpdate(articleId, {
-      dateDecision: Date.now(),
-      manuscriptId: _generateManuscriptId,
-      status: ArticleStatus.ACCEPTED,
-      editorInChiefStatus: EditorChiefStatus.PUBLISHED,
-      publisherStatus: PublishStatus.PUBLISHED,
-      publishedDate: Date.now(),
-      ...req.body,
-    });
-
-    article.author?.email &&
-      sendMail(article.author.email, EmailTypes.PUBLISHED);
+    // article.author?.email &&
+    //   sendMail(article.author.email, EmailTypes.PUBLISHED);
 
     res.send("success");
   } catch (error) {

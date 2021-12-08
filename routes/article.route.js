@@ -107,7 +107,7 @@ articleRoute
 
 articleRoute
   .route("/:id/publish")
-  .post(isAuth, hasRole([ROLES.PUBLISHER]), publishArticle);
+  .post(isAuth, hasRole([ROLES.PUBLISHER, ROLES.EDITOR]), publishArticle);
 
 articleRoute
   .route("/:id/reject")

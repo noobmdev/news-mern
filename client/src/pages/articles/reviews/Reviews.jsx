@@ -744,6 +744,20 @@ const Reviews = () => {
                 </Button>
               </>
             );
+
+          case EDITOR_STATUSES.COMPLETED:
+            return (
+              <>
+                <Button
+                  onClick={() => hanldeDownload(item)}
+                  size="xs"
+                  mt="1"
+                  colorScheme="blue"
+                >
+                  View pdf
+                </Button>
+              </>
+            );
         }
 
       //  role PUBLISHER

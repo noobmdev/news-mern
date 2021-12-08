@@ -66,6 +66,8 @@ export const Home = () => {
     }
   }, [volumes]);
 
+  console.log(latestVolume);
+
   const location = useLocation();
 
   const { q } = queryString.parse(location.search);
@@ -203,11 +205,9 @@ export const Home = () => {
                   <Image
                     objectFit="cover"
                     src={
-                      latestVolume
-                        ? latestVolume.issue?.filename
-                          ? imagePath(latestVolume.issue?.filename)
-                          : "https://media.springernature.com/w92/springer-static/cover/journal/11277/120/1.jpg"
-                        : "https://media.springernature.com/w92/springer-static/cover/journal/11277/120/1.jpg"
+                      !!latestVolume?.issue?.filename
+                        ? imagePath(latestVolume.issue?.filename)
+                        : ""
                     }
                     alt="image"
                   />
